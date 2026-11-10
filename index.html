@@ -87,10 +87,11 @@
         }
         .text-input:focus { border-color: #00e096; background: rgba(0, 0, 0, 0.45); }
 
-        .btn-row { display: flex; gap: 15px; margin-top: 25px; }
+        /* Butang Pelbagai Mod */
+        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
         .btn-main {
             flex: 1; color: #fff; border: none;
-            padding: 18px 24px; font-size: 1.2rem; font-weight: 800; text-transform: uppercase;
+            padding: 16px 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
             border-radius: 12px; cursor: pointer; 
             background: linear-gradient(135deg, #00b09b, #96c93d);
             box-shadow: 0 8px 20px rgba(0, 176, 155, 0.4);
@@ -100,6 +101,23 @@
         .btn-main:active { transform: translateY(2px); }
         
         .btn-host { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 8px 20px rgba(241, 39, 17, 0.4); }
+
+        .btn-solo {
+            width: 100%; margin-top: 15px;
+            background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
+            box-shadow: 0 8px 25px rgba(233, 64, 87, 0.5);
+            padding: 18px 24px; font-size: 1.2rem; font-weight: 900;
+        }
+        .btn-solo:hover { box-shadow: 0 12px 30px rgba(233, 64, 87, 0.7); transform: translateY(-2px); }
+
+        .divider-label {
+            margin: 22px 0 12px 0; font-size: 0.85rem; font-weight: 800;
+            color: #ffd700; text-transform: uppercase; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .divider-label::before, .divider-label::after {
+            content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2);
+        }
 
         /* Lobby & QR Code Section */
         .pin-pill {
@@ -240,7 +258,7 @@
         .wrong-bg { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
         .host-reveal-bg { background: linear-gradient(135deg, #302b63, #46178f); border: 2px solid #00e096; }
 
-        /* Podium */
+        /* Podium (Multiplayer) */
         .podium-wrap { display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin: 30px 0 20px; height: 210px; }
         .podium-col {
             width: 30%; border-radius: 12px 12px 0 0; display: flex;
@@ -256,6 +274,15 @@
         .winner-table th { background: rgba(255,255,255,0.1); color: #fff; padding: 12px; font-size: 0.95rem; text-align: left; }
         .winner-table td { padding: 12px; background: rgba(255,255,255,0.06); text-align: left; font-weight: 700; color: #fff; }
         .my-row td { background: rgba(0,224,150,0.2) !important; color: #00e096; font-weight: 900; }
+
+        /* Kad Keputusan Solo */
+        .solo-score-box {
+            background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px; padding: 30px 20px; margin: 25px 0;
+        }
+        .solo-stars { font-size: 3rem; margin-bottom: 10px; filter: drop-shadow(0 0 10px #ffd700); }
+        .solo-score-number { font-size: 3.5rem; font-weight: 900; color: #00e096; text-shadow: 0 0 20px rgba(0, 224, 150, 0.5); }
+        .solo-stats-row { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 1.1rem; font-weight: 700; }
 
         /* --- KAKI HALAMAN (FOOTER) --- */
         footer {
@@ -308,32 +335,39 @@
         </a>
     </nav>
 
-    <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊 Sound ON</button>
+    <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊 Bunyi ON</button>
 
     <!-- SCREEN 1: LOGIN -->
     <div id="login-screen" class="screen active">
         <div class="card">
-            <div class="logo">KAH! MATEMATIK</div>
+            <div class="logo">EASY MATH!</div>
             <div class="subtitle">Matematik Darjah 1 • 20 Soalan Rawak</div>
-            
-            <div class="input-group">
-                <label>PIN Bilik / Quiz ID</label>
-                <input type="text" id="pin-input" class="text-input" placeholder="e.g. MATE1" maxlength="12">
-            </div>
             
             <div class="input-group" id="nick-group">
                 <label>Nama Murid</label>
                 <input type="text" id="name-input" class="text-input" placeholder="Masukkan nama anda" maxlength="18">
             </div>
 
+            <!-- MOD LATIHAN KENDIRI (SELF-PACED / SOLO) -->
+            <button class="btn-main btn-solo" onclick="startSoloMode()">
+                🎯 Mod Latihan Kendiri (Self-Paced / Solo)
+            </button>
+
+            <div class="divider-label">ATAU MAIN BERAMAI-RAMAI (LIVE MULTIPLAYER)</div>
+            
+            <div class="input-group">
+                <label>PIN Bilik / Quiz ID (Untuk Mod Live Sahaja)</label>
+                <input type="text" id="pin-input" class="text-input" placeholder="e.g. MATE1" maxlength="12">
+            </div>
+
             <div class="btn-row">
-                <button class="btn-main" onclick="joinAsPlayer()">Masuk Sebagai Murid</button>
+                <button class="btn-main" onclick="joinAsPlayer()">Masuk Bilik Guru</button>
                 <button class="btn-main btn-host" onclick="startAsHost()">Buka Skrin Guru (Hos)</button>
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 2: LOBBY -->
+    <!-- SCREEN 2: LOBBY (LIVE MULTIPLAYER SAHAJA) -->
     <div id="lobby-screen" class="screen">
         <div class="card">
             <div class="subtitle">GAME PIN</div>
@@ -379,7 +413,7 @@
             <div id="question-text">Memuatkan soalan...</div>
         </div>
 
-        <!-- 5-Second Question Preview Notice -->
+        <!-- 5-Second Question Preview Notice (Hanya muncul jika bukan mod solo) -->
         <div id="preview-box">
             <div class="preview-text">📖 Baca soalan dengan teliti... Pilihan jawapan akan muncul sebentar lagi!</div>
         </div>
@@ -397,49 +431,79 @@
             <br>
             <h2 id="feedback-points" style="font-size: 2.2rem; margin-top: 18px;">+0 pts</h2>
 
+            <!-- KAWALAN SKRIN GURU (HOS SAHAJA) -->
             <div id="host-feedback-controls" style="display: none; margin-top: 25px;">
                 <p id="auto-advance-msg" style="color: #ffd700; margin-bottom: 10px; font-weight: 800;">Soalan seterusnya dalam 5s...</p>
                 <button class="btn-main" onclick="hostNextQuestion()" style="width: 100%; max-width: 350px;">Soalan Seterusnya ▶</button>
             </div>
+
+            <!-- KAWALAN MOD KENDIRI (SELF-PACED / SOLO) -->
+            <div id="solo-feedback-controls" style="display: none; margin-top: 30px;">
+                <button class="btn-main" onclick="soloNextQuestion()" style="width: 100%; max-width: 380px; font-size: 1.25rem;">
+                    Soalan Seterusnya ▶
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- SCREEN 5: FINAL PODIUM -->
+    <!-- SCREEN 5: FINAL PODIUM & KEPUTUSAN -->
     <div id="end-screen" class="screen">
         <div class="card" style="padding: 35px 20px;">
-            <div class="logo" style="font-size: 2.8rem;">PODIUM PEMENANG</div>
+            <div class="logo" id="final-screen-title" style="font-size: 2.8rem;">PODIUM PEMENANG</div>
             <div class="subtitle" id="winner-room-tag">Matematik Darjah 1</div>
 
-            <div class="podium-wrap">
-                <div class="podium-col pod-2">
-                    <div class="medal">🥈</div>
-                    <div id="p2-name">-</div>
-                    <div id="p2-score" style="font-size: 0.9rem;">0 pts</div>
+            <!-- PAPARAN KEPUTUSAN MOD SOLO / KENDIRI -->
+            <div id="solo-result-card" style="display: none;">
+                <div class="solo-score-box">
+                    <div class="solo-stars" id="solo-stars">⭐⭐⭐</div>
+                    <div class="solo-score-number" id="solo-final-score">0</div>
+                    <div style="font-size: 1rem; color: #ffd700; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Jumlah Markah Terkumpul</div>
+                    
+                    <div class="solo-stats-row">
+                        <div>Ketepatan: <span id="solo-accuracy" style="color: #00e096;">0 / 20</span></div>
+                        <div>Status: <span id="solo-status-text" style="color: #ffd700;">Cemerlang!</span></div>
+                    </div>
                 </div>
-                <div class="podium-col pod-1">
-                    <div class="medal">🥇</div>
-                    <div id="p1-name" style="font-size: 1.3rem;">-</div>
-                    <div id="p1-score" style="font-size: 1rem;">0 pts</div>
-                </div>
-                <div class="podium-col pod-3">
-                    <div class="medal">🥉</div>
-                    <div id="p3-name">-</div>
-                    <div id="p3-score" style="font-size: 0.9rem;">0 pts</div>
-                </div>
+                <button class="btn-main btn-solo" onclick="startSoloMode()">
+                    🔄 Uji Lagi (20 Soalan Baharu)
+                </button>
             </div>
 
-            <table class="winner-table">
-                <thead>
-                    <tr>
-                        <th style="width: 15%;">Kedudukan</th>
-                        <th>Nama Murid</th>
-                        <th style="width: 25%;">Markah</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboard-tbody"></tbody>
-            </table>
+            <!-- PAPARAN PODIUM MULTIPLAYER (HOS & BILIK GURU) -->
+            <div id="multiplayer-podium-wrap">
+                <div class="podium-wrap">
+                    <div class="podium-col pod-2">
+                        <div class="medal">🥈</div>
+                        <div id="p2-name">-</div>
+                        <div id="p2-score" style="font-size: 0.9rem;">0 pts</div>
+                    </div>
+                    <div class="podium-col pod-1">
+                        <div class="medal">🥇</div>
+                        <div id="p1-name" style="font-size: 1.3rem;">-</div>
+                        <div id="p1-score" style="font-size: 1rem;">0 pts</div>
+                    </div>
+                    <div class="podium-col pod-3">
+                        <div class="medal">🥉</div>
+                        <div id="p3-name">-</div>
+                        <div id="p3-score" style="font-size: 0.9rem;">0 pts</div>
+                    </div>
+                </div>
 
-            <button class="btn-main" onclick="location.reload()" style="margin-top: 30px; width: 100%;">Main Sekali Lagi</button>
+                <table class="winner-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Kedudukan</th>
+                            <th>Nama Murid</th>
+                            <th style="width: 25%;">Markah</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody"></tbody>
+                </table>
+            </div>
+
+            <button class="btn-main" onclick="location.reload()" style="margin-top: 25px; width: 100%;">
+                🏠 Kembali ke Menu Utama
+            </button>
         </div>
     </div>
 
@@ -748,11 +812,13 @@
         // 4. SISTEM MULTIPLAYER & PEMILIHAN 20 SOALAN RAWAK
         // =================================================================
         let isHost = false;
+        let isSoloMode = false; // Flag mod kendiri / self-paced
         let roomPin = "";
         let myId = "usr_" + Math.random().toString(36).substring(2, 9);
         let myName = "";
         let currentQIndex = -1;
         let myScore = 0;
+        let soloCorrectCount = 0;
         let myChoiceThisRound = null;
         let roundEarnedPoints = 0; 
         let previewCountdown = null;
@@ -775,7 +841,6 @@
         // Fungsi memilih 20 indeks unik secara rawak daripada 150 soalan
         function pick20RandomIndices() {
             const indices = Array.from({ length: allQuestionsPool.length }, (_, i) => i);
-            // Algoritma Fisher-Yates Shuffle
             for (let i = indices.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [indices[i], indices[j]] = [indices[j], indices[i]];
@@ -783,12 +848,40 @@
             return indices.slice(0, 20);
         }
 
-        // Masuk sebagai Murid
+        // =================================================================
+        // MOD 1: UJIAN KENDIRI (SELF-PACED / SOLO TEST)
+        // =================================================================
+        function startSoloMode() {
+            isSoloMode = true;
+            isHost = false;
+            myName = document.getElementById('name-input').value.trim() || "Murid Cerdik";
+            
+            // Pilih 20 soalan rawak khusus untuk latihan murid ini
+            const selected20 = pick20RandomIndices();
+            quizData = selected20.map(idx => allQuestionsPool[idx]);
+
+            myScore = 0;
+            soloCorrectCount = 0;
+            currentQIndex = 0;
+
+            document.getElementById('player-hud-name').innerText = `${myName} (Kendiri)`;
+            document.getElementById('score-hud').style.display = "inline-block";
+            document.getElementById('score-hud').innerText = `Markah: 0`;
+            document.getElementById('answers-counter').style.display = "none";
+
+            SoundTrack.startGameMusic();
+            renderQuestion(0);
+        }
+
+        // =================================================================
+        // MOD 2: MULTIPLAYER (BILIK GURU & HOS)
+        // =================================================================
         function joinAsPlayer() {
             const pin = document.getElementById('pin-input').value.trim().toUpperCase();
             const name = document.getElementById('name-input').value.trim();
             if (!pin || !name) { alert("Sila masukkan PIN Bilik dan Nama Murid!"); return; }
 
+            isSoloMode = false;
             isHost = false;
             roomPin = pin;
             myName = name;
@@ -807,9 +900,9 @@
             }
         }
 
-        // Buka Skrin Guru (Hos)
         function startAsHost() {
             const pin = document.getElementById('pin-input').value.trim().toUpperCase() || "MATE" + Math.floor(100 + Math.random() * 900);
+            isSoloMode = false;
             isHost = true;
             roomPin = pin;
             myName = "GURU (HOS)";
@@ -817,7 +910,6 @@
             document.getElementById('score-hud').style.display = "none";
             document.getElementById('answers-counter').style.display = "inline-block";
 
-            // Bina URL QR Code automatik
             const pageUrl = window.location.origin.includes('github.io') 
                 ? window.location.href.split('?')[0] 
                 : "https://edhkn.github.io/tlsm/matematik1.html";
@@ -835,7 +927,6 @@
             document.getElementById('player-waiting-spinner').style.display = "none";
             document.getElementById('lobby-role-msg').innerText = "Imbas kod QR atau masukkan PIN di bawah untuk menyertai:";
 
-            // Pilih 20 soalan rawak sekarang untuk bilik ini
             const selected20 = pick20RandomIndices();
             quizData = selected20.map(idx => allQuestionsPool[idx]);
 
@@ -844,17 +935,15 @@
                     status: 'lobby',
                     qIndex: -1,
                     hostId: myId,
-                    selectedIndices: selected20 // Simpan 20 soalan terpilih ke Firebase agar semua murid terima soalan sama
+                    selectedIndices: selected20
                 });
                 listenToRoomState();
             }
         }
 
-        // Penyegerakan Masa Nyata (Real-time synchronization)
         function listenToRoomState() {
-            if (!db) return;
+            if (!db || isSoloMode) return;
 
-            // 1. Dapatkan senarai murid masuk
             db.ref(`rooms/${roomPin}/players`).on('value', snap => {
                 const players = snap.val() || {};
                 const entries = Object.entries(players);
@@ -871,7 +960,6 @@
                 });
             });
 
-            // 2. Pantau penghantaran jawapan (Tamat automatik jika semua murid sudah menjawab)
             db.ref(`rooms/${roomPin}/answers`).on('value', snap => {
                 const answers = snap.val() || {};
                 const answeredCount = Object.keys(answers).length;
@@ -891,12 +979,10 @@
                 }
             });
 
-            // 3. Status bilik & soalan aktif
             db.ref(`rooms/${roomPin}`).on('value', snap => {
                 const room = snap.val();
                 if (!room) return;
 
-                // Pastikan murid membaca 20 soalan rawak yang sama dengan hos
                 if (room.selectedIndices && Array.isArray(room.selectedIndices)) {
                     quizData = room.selectedIndices.map(idx => allQuestionsPool[idx]);
                 }
@@ -915,7 +1001,6 @@
             });
         }
 
-        // Guru melancarkan kuiz
         function hostLaunchesQuiz() {
             if (!db) return;
             db.ref(`rooms/${roomPin}`).update({
@@ -925,7 +1010,9 @@
             });
         }
 
-        // Paparkan Soalan: 5 Saat Baca Soalan -> 20 Saat Pilihan Jawapan Muncul
+        // =================================================================
+        // 5. PAPARAN SOALAN & INTERAKSI JAWAPAN
+        // =================================================================
         function renderQuestion(idx) {
             clearInterval(previewCountdown);
             clearInterval(timerCountdown);
@@ -947,18 +1034,6 @@
             const livePtsBadge = document.getElementById('live-points-badge');
             const previewBox = document.getElementById('preview-box');
             const container = document.getElementById('options-container');
-
-            timerEl.classList.add('timer-preview');
-            phaseBadge.innerText = "Baca Soalan";
-            phaseBadge.style.background = "#ffd700";
-            phaseBadge.style.color = "#1a0b2e";
-            livePtsBadge.style.display = "none";
-            previewBox.style.display = "block";
-            container.style.display = "none";
-
-            if (isHost) {
-                document.getElementById('answers-counter').innerText = `Jawapan: 0/${totalPlayerCount}`;
-            }
 
             container.innerHTML = '';
             container.classList.remove('disabled-grid');
@@ -982,7 +1057,32 @@
                 }
             });
 
-            // 5 saat masa membaca
+            // JIKA MOD KENDIRI (SELF-PACED / SOLO):
+            // Paparkan soalan dan pilihan jawapan serta-merta tanpa perlu tunggu 5 saat
+            if (isSoloMode) {
+                previewBox.style.display = "none";
+                container.style.display = "grid";
+                timerEl.classList.remove('timer-preview');
+                phaseBadge.innerText = "Ujian Kendiri";
+                phaseBadge.style.background = "#8a2387";
+                phaseBadge.style.color = "#fff";
+                startAnswerPhase();
+                return;
+            }
+
+            // JIKA MOD MULTIPLAYER: Ada fasa 5 saat baca soalan
+            timerEl.classList.add('timer-preview');
+            phaseBadge.innerText = "Baca Soalan";
+            phaseBadge.style.background = "#ffd700";
+            phaseBadge.style.color = "#1a0b2e";
+            livePtsBadge.style.display = "none";
+            previewBox.style.display = "block";
+            container.style.display = "none";
+
+            if (isHost) {
+                document.getElementById('answers-counter').innerText = `Jawapan: 0/${totalPlayerCount}`;
+            }
+
             let previewSeconds = 5;
             timerEl.innerText = previewSeconds;
             SoundTrack.startPreviewTone();
@@ -998,7 +1098,6 @@
             }, 1000);
         }
 
-        // Fasa Menjawab 20 Saat (Butang Muncul & Pengurangan Markah Berdasarkan Kelajuan)
         function startAnswerPhase() {
             isAnsweringPhase = true;
             answerPhaseStartTime = Date.now(); 
@@ -1013,14 +1112,15 @@
             container.style.display = "grid";
             timerEl.classList.remove('timer-preview');
 
-            phaseBadge.innerText = "Jawab Sekarang!";
-            phaseBadge.style.background = "#00e096";
-            phaseBadge.style.color = "#083b27";
+            if (!isSoloMode) {
+                phaseBadge.innerText = "Jawab Sekarang!";
+                phaseBadge.style.background = "#00e096";
+                phaseBadge.style.color = "#083b27";
+            }
 
             livePtsBadge.style.display = "inline-block";
             livePtsBadge.innerText = "⚡ 1,000 pts";
 
-            // Markah berkurang lancar dari 1,000 ke 500 mengikut milisaat
             clearInterval(liveScoreInterval);
             liveScoreInterval = setInterval(() => {
                 if (!isAnsweringPhase || myChoiceThisRound !== null) return;
@@ -1045,38 +1145,47 @@
                 if (secondsLeft <= 0) {
                     clearInterval(timerCountdown);
                     clearInterval(liveScoreInterval);
-                    if (isHost && db) {
+                    if (isSoloMode) {
+                        playerPicksAnswer(0); // Masa tamat dalam mod solo
+                    } else if (isHost && db) {
                         db.ref(`rooms/${roomPin}`).update({ status: 'reveal' });
                     }
                 }
             }, 1000);
         }
 
-        // Murid Menekan Jawapan
         function playerPicksAnswer(choice) {
             if (isHost || !isAnsweringPhase || myChoiceThisRound !== null) return;
             myChoiceThisRound = choice;
             clearInterval(liveScoreInterval);
+            clearInterval(timerCountdown);
 
             const responseTimeMs = Math.max(0, Date.now() - answerPhaseStartTime);
             
             document.getElementById('options-container').classList.add('disabled-grid');
-            document.getElementById('player-submitted-banner').style.display = "block";
 
             const q = quizData[currentQIndex];
             if (choice === q.correct) {
                 const decayRatio = Math.min(1, responseTimeMs / 20000);
                 roundEarnedPoints = Math.max(500, Math.round(1000 - (500 * decayRatio)));
                 myScore += roundEarnedPoints;
-
+                soloCorrectCount++;
                 document.getElementById('live-points-badge').innerText = `⚡ +${roundEarnedPoints} pts (Terkunci)`;
-                if (db) db.ref(`rooms/${roomPin}/players/${myId}`).update({ score: myScore });
             } else {
                 roundEarnedPoints = 0;
                 document.getElementById('live-points-badge').innerText = `⚡ 0 pts`;
             }
 
+            // Jika mod solo, terus buka skrin semakan jawapan secara kendiri
+            if (isSoloMode) {
+                renderFeedbackScreen();
+                return;
+            }
+
+            // Jika mod multiplayer, rekod ke Firebase
+            document.getElementById('player-submitted-banner').style.display = "block";
             if (db) {
+                db.ref(`rooms/${roomPin}/players/${myId}`).update({ score: myScore });
                 db.ref(`rooms/${roomPin}/answers/${myId}`).set({
                     choice: choice,
                     timeMs: responseTimeMs,
@@ -1085,7 +1194,9 @@
             }
         }
 
-        // Skrin Pendedahan Jawapan & Maklum Balas
+        // =================================================================
+        // 6. MAKLUM BALAS & SEMAKAN JAWAPAN
+        // =================================================================
         function renderFeedbackScreen() {
             clearInterval(previewCountdown);
             clearInterval(timerCountdown);
@@ -1101,9 +1212,37 @@
             const ansText = document.getElementById('correct-answer-text');
             const ptsText = document.getElementById('feedback-points');
             const hostControls = document.getElementById('host-feedback-controls');
+            const soloControls = document.getElementById('solo-feedback-controls');
 
             ansText.innerText = `Jawapan Betul: ${q.options[q.correct - 1]}`;
 
+            // A. MOD UJIAN KENDIRI (SELF-PACED / SOLO)
+            if (isSoloMode) {
+                hostControls.style.display = "none";
+                soloControls.style.display = "block";
+                ptsText.style.display = "inline-block";
+
+                if (myChoiceThisRound === q.correct) {
+                    banner.className = 'card feedback-banner correct-bg';
+                    title.innerText = "Tahniah, Betul!";
+                    ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
+                    SoundTrack.playSfx('correct');
+                } else if (myChoiceThisRound === 0) {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Masa Tamat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                } else {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Kurang Tepat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                }
+                return;
+            }
+
+            // B. MOD MULTIPLAYER (SKRIN GURU / HOS)
+            soloControls.style.display = "none";
             if (isHost) {
                 banner.className = 'card feedback-banner host-reveal-bg';
                 title.innerText = "Pusingan Selesai!";
@@ -1124,8 +1263,8 @@
                         hostNextQuestion();
                     }
                 }, 1000);
-
             } else {
+                // B. MOD MULTIPLAYER (PERANTI MURID)
                 ptsText.style.display = "inline-block";
                 hostControls.style.display = "none";
 
@@ -1134,7 +1273,7 @@
                     title.innerText = "Tahniah, Betul!";
                     ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
                     SoundTrack.playSfx('correct');
-                } else if (myChoiceThisRound === null) {
+                } else if (myChoiceThisRound === null || myChoiceThisRound === 0) {
                     banner.className = 'card feedback-banner wrong-bg';
                     title.innerText = "Masa Tamat!";
                     ptsText.innerText = "+0 pts";
@@ -1148,7 +1287,17 @@
             }
         }
 
-        // Guru maju ke soalan seterusnya (Maksimum 20 soalan)
+        // Murid menekan "Soalan Seterusnya" dalam Mod Latihan Kendiri
+        function soloNextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < quizData.length) {
+                renderQuestion(currentQIndex);
+            } else {
+                showSoloEndScreen();
+            }
+        }
+
+        // Guru maju ke soalan seterusnya dalam Mod Multiplayer
         function hostNextQuestion() {
             clearInterval(autoAdvanceCountdown);
             if (!db) return;
@@ -1164,10 +1313,43 @@
             }
         }
 
-        // Paparan Podium Pemenang (Peringkat Akhir)
+        // =================================================================
+        // 7. KEPUTUSAN AKHIR & PODIUM
+        // =================================================================
+        function showSoloEndScreen() {
+            SoundTrack.startPodiumFanfare();
+            showScreen('end-screen');
+
+            document.getElementById('final-screen-title').innerText = "TAHNIAH, SELESAI!";
+            document.getElementById('winner-room-tag').innerText = `Latihan Kendiri: ${myName}`;
+            document.getElementById('multiplayer-podium-wrap').style.display = "none";
+            document.getElementById('solo-result-card').style.display = "block";
+
+            document.getElementById('solo-final-score').innerText = myScore.toLocaleString();
+            document.getElementById('solo-accuracy').innerText = `${soloCorrectCount} / ${quizData.length}`;
+
+            // Skor Bintang
+            const starsEl = document.getElementById('solo-stars');
+            const statusEl = document.getElementById('solo-status-text');
+            if (soloCorrectCount >= 18) {
+                starsEl.innerText = "⭐⭐⭐";
+                statusEl.innerText = "Luar Biasa / Cemerlang! 🌟";
+            } else if (soloCorrectCount >= 12) {
+                starsEl.innerText = "⭐⭐";
+                statusEl.innerText = "Bagus, Teruskan Usaha! 👍";
+            } else {
+                starsEl.innerText = "⭐";
+                statusEl.innerText = "Cuba Lagi Untuk Capai 3 Bintang! 💪";
+            }
+        }
+
         function showPodium() {
             showScreen('end-screen');
+            document.getElementById('final-screen-title').innerText = "PODIUM PEMENANG";
             document.getElementById('winner-room-tag').innerText = `PIN Bilik: ${roomPin}`;
+            document.getElementById('multiplayer-podium-wrap').style.display = "block";
+            document.getElementById('solo-result-card').style.display = "none";
+
             if (!db) return;
 
             db.ref(`rooms/${roomPin}/players`).once('value', snap => {
