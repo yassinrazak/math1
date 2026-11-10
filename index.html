@@ -104,10 +104,10 @@
         .btn-main:active { transform: translateY(2px); }
         
         .btn-host { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 8px 20px rgba(241, 39, 17, 0.4); }
-        .btn-register { background: linear-gradient(135deg, #333399, #ff00cc); box-shadow: 0 8px 20px rgba(255, 0, 204, 0.4); margin-top: 15px; }
+        .btn-register { background: linear-gradient(135deg, #333399, #ff00cc); box-shadow: 0 8px 20px rgba(255, 0, 204, 0.4); margin-top: 10px; }
 
         .btn-solo {
-            width: 100%; margin-top: 15px;
+            width: 100%;
             background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
             box-shadow: 0 8px 25px rgba(233, 64, 87, 0.5);
             padding: 18px 24px; font-size: 1.2rem; font-weight: 900;
@@ -191,12 +191,19 @@
 
     <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊 Bunyi ON</button>
 
-    <!-- SCREEN 1: LANDING PAGE LOG MASUK -->
+    <!-- SCREEN 1: LANDING PAGE LOG MASUK & LATIHAN KENDIRI -->
     <div id="auth-screen" class="screen active">
         <div class="card">
-            <div class="logo">KAH! MATEMATIK</div>
-            <div class="subtitle">Log Masuk Portal Pelajar</div>
+            <div class="logo">EASY MATH!</div>
+            <div class="subtitle">Portal Pembelajaran Tahun 1</div>
             
+            <!-- AKSES PANTAS MOD KENDIRI (TANPA LOG MASUK) -->
+            <button class="btn-main btn-solo" onclick="startSoloMode()">
+                🎯 Mula Latihan Kendiri (Self-Paced)
+            </button>
+            
+            <div class="divider-label">LOG MASUK PORTAL LIVE</div>
+
             <div class="input-group">
                 <label>Nama Pengguna (Username)</label>
                 <input type="text" id="auth-username" class="text-input" placeholder="Masukkan Username">
@@ -215,13 +222,13 @@
             </div>
 
             <div class="btn-row">
-                <button class="btn-main" onclick="verifyLogin()">Log Masuk Sekarang</button>
-                <button class="btn-main btn-register" onclick="window.location.href='register.html'">Daftar Akaun (Admin)</button>
+                <button class="btn-main" onclick="verifyLogin()">Log Masuk Bilik Live</button>
+                <button class="btn-main btn-register" onclick="window.location.href='register.html'">Daftar Akaun Baharu</button>
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 2: PILIHAN BILIK / KUIZ (DASHBOARD) -->
+    <!-- SCREEN 2: PILIHAN BILIK / KUIZ (DASHBOARD SELEPAS LOG MASUK) -->
     <div id="room-screen" class="screen">
         <div class="card card-large">
             <div class="logo">SELAMAT DATANG</div>
@@ -252,7 +259,6 @@
             <div class="pin-pill" id="lobby-pin-display">------</div>
             <p id="lobby-role-msg">Menunggu semua murid menyertai kuiz...</p>
 
-            <!-- QR CODE SECTION (SHOWN TO HOST) -->
             <div id="host-qr-section" class="qr-card-container" style="display: none;">
                 <div class="qr-image-wrapper">
                     <img id="host-qr-image" src="" alt="Imbas Untuk Masuk">
@@ -295,12 +301,12 @@
         </div>
 
         <div class="options-grid" id="options-container"></div>
-        <div id="player-submitted-banner">Jawapan Dihantar! 🔒 Menunggu kawan-kawan lain...</div>
+        <div id="player-submitted-banner" style="display:none; margin-top: 20px; color:#00e096; font-weight:bold;">Jawapan Dihantar! 🔒 Menunggu kawan-kawan lain...</div>
     </div>
 
     <!-- SCREEN 5: ROUND FEEDBACK & REVEAL -->
     <div id="feedback-screen" class="screen">
-        <div class="card" id="feedback-banner" style="padding: 50px 25px; border-radius: 20px;">
+        <div class="card card-large" id="feedback-banner" style="padding: 50px 25px; border-radius: 20px;">
             <h1 id="feedback-title" style="font-size: 3rem; margin-bottom: 12px;">Masa Tamat</h1>
             <div id="correct-answer-text" style="font-size: 1.25rem; background: rgba(0,0,0,0.35); padding: 14px 20px; border-radius: 12px; display: inline-block; font-weight: 700;"></div>
             <br>
@@ -308,11 +314,13 @@
 
             <div id="host-feedback-controls" style="display: none; margin-top: 25px;">
                 <p id="auto-advance-msg" style="color: #ffd700; font-weight: 800;">Soalan seterusnya dalam 5s...</p>
-                <button class="btn-main" onclick="hostNextQuestion()">Soalan Seterusnya ▶</button>
+                <button class="btn-main" onclick="hostNextQuestion()" style="max-width:350px; margin: 10px auto;">Soalan Seterusnya ▶</button>
             </div>
 
             <div id="solo-feedback-controls" style="display: none; margin-top: 30px;">
-                <button class="btn-main" onclick="soloNextQuestion()">Soalan Seterusnya ▶</button>
+                <button class="btn-main" onclick="soloNextQuestion()" style="max-width: 380px; margin: 0 auto; font-size: 1.25rem;">
+                    Soalan Seterusnya ▶
+                </button>
             </div>
         </div>
     </div>
@@ -359,7 +367,7 @@
                 </table>
             </div>
             
-            <button class="btn-main" onclick="location.reload()" style="margin-top: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">🏠 Log Keluar</button>
+            <button class="btn-main" onclick="location.reload()" style="margin-top: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">🏠 Kembali ke Menu Utama</button>
         </div>
     </div>
 
@@ -380,15 +388,10 @@
     </footer>
 
     <script>
-        // =================================================================
-        // TETAPAN GOOGLE APPS SCRIPT (GAS) UNTUK LOG MASUK
-        // Sila masukkan URL Web App GAS anda di bawah:
-        // =================================================================
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby1QQ6l3JG707pPU0GBokUvwOxrNSXJzjBOcu4fh2Z16Gr5lJUctCSyE4TJviwMMbRKWA/exec"; 
         
         let loggedInUsername = "";
 
-        // Fungsi Log Masuk
         function verifyLogin() {
             const usernameInput = document.getElementById('auth-username').value.trim();
             const passwordInput = document.getElementById('auth-password').value.trim();
@@ -404,7 +407,6 @@
             errorMsg.style.display = "none";
             loadingUI.style.display = "block";
 
-            // Menggunakan POST request ke Google App Script
             fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -417,7 +419,7 @@
             .then(data => {
                 loadingUI.style.display = "none";
                 if (data.status === "success") {
-                    loggedInUsername = usernameInput; // Simpan nama
+                    loggedInUsername = usernameInput;
                     document.getElementById('welcome-name').innerText = "Hai, " + loggedInUsername + "!";
                     showScreen('room-screen');
                 } else {
@@ -433,9 +435,6 @@
             });
         }
 
-        // =================================================================
-        // KAHOOT SOUND ENGINE (Web Audio API)
-        // =================================================================
         const SoundTrack = {
             ctx: null, muted: false, timer: null, step: 0, mode: 'none',
             init() {
@@ -534,19 +533,14 @@
             }
         }
 
-        // =================================================================
-        // FIREBASE BACKEND SETUP
-        // =================================================================
         const firebaseConfig = { databaseURL: "https://tlsm-1-default-rtdb.asia-southeast1.firebasedatabase.app/" };
         let db = null;
         try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } 
         catch (e) { console.warn("Ralat Firebase:", e); }
 
-        // =================================================================
-        // BANK SOALAN: 250 SOALAN MATEMATIK DARJAH 1 (SET 1, 2, & 3)
-        // =================================================================
+        // BANK 250 SOALAN MATEMATIK DARJAH 1 (SET 1, 2, & 3)
         const allQuestionsPool = [
-            // --- SET 3 (100 SOALAN BARU) ---
+            // --- SET 3 ---
             { q: "Apakah nombor selepas 88?", options: ["87", "89", "90", "98"], correct: 2 },
             { q: "Apakah nombor sebelum 100?", options: ["98", "99", "90", "89"], correct: 2 },
             { q: "Berapakah nilai digit 6 dalam nombor 64?", options: ["6", "4", "60", "64"], correct: 3 },
@@ -648,7 +642,7 @@
             { q: "Dalam sebuah bakul ada 25 biji telur. 5 biji digunakan untuk memasak. Berapa biji telur yang tinggal?", options: ["15", "20", "25", "30"], correct: 2 },
             { q: "Terdapat 3 ekor ayam. Setiap ayam mempunyai 2 kaki. Berapakah jumlah kaki semuanya?", options: ["3", "4", "6", "8"], correct: 3 },
 
-            // --- SET 2 (100 SOALAN KEMASUKAN TERDAHULU) ---
+            // --- SET 2 ---
             { q: "Apakah nombor selepas 39?", options: ["38", "40", "41", "49"], correct: 2 },
             { q: "Apakah nombor sebelum 56?", options: ["54", "55", "57", "58"], correct: 2 },
             { q: "Berapakah nilai digit 4 dalam nombor 47?", options: ["4", "7", "40", "47"], correct: 3 },
@@ -750,7 +744,7 @@
             { q: "Aina mempunyai 25 batang pensel. Dia memberikan 10 batang kepada kawannya. Berapa batang pensel yang tinggal?", options: ["10", "15", "20", "25"], correct: 2 },
             { q: "Ada 4 buah kereta. Setiap kereta mempunyai 4 tayar. Berapakah jumlah tayar semuanya?", options: ["8", "12", "16", "20"], correct: 3 },
 
-            // --- SET 1 (50 SOALAN KEMASUKAN TERDAHULU) ---
+            // --- SET 1 ---
             { q: "Berapakah nombor selepas 15?", options: ["14", "16", "17", "18"], correct: 2 },
             { q: "Berapakah nombor sebelum 30?", options: ["28", "29", "31", "32"], correct: 2 },
             { q: "Yang manakah nombor paling besar?", options: ["12", "25", "18", "21"], correct: 2 },
@@ -803,9 +797,6 @@
             { q: "Apakah hasil 10 + 10 - 5?", options: ["10", "15", "20", "25"], correct: 2 }
         ];
 
-        // =================================================================
-        // 5. SISTEM MULTIPLAYER & PEMILIHAN 20 SOALAN RAWAK
-        // =================================================================
         let isHost = false;
         let isSoloMode = false; 
         let roomPin = "";
@@ -832,7 +823,6 @@
             document.getElementById(id).classList.add('active');
         }
 
-        // Fungsi memilih 20 indeks unik secara rawak daripada bank 250 soalan
         function pick20RandomIndices() {
             const indices = Array.from({ length: allQuestionsPool.length }, (_, i) => i);
             for (let i = indices.length - 1; i > 0; i--) {
@@ -843,19 +833,14 @@
         }
 
         // =================================================================
-        // MOD 1: UJIAN KENDIRI (SELF-PACED / SOLO TEST)
+        // MOD LATIHAN KENDIRI (SELF-PACED)
         // =================================================================
         function startSoloMode() {
             isSoloMode = true;
             isHost = false;
             
-            // Semak jika pengguna melangkau halaman login terus ke Dashboard
-            if (!loggedInUsername) {
-                myName = document.getElementById('auth-username') ? document.getElementById('auth-username').value.trim() : "Murid Cerdik";
-                if (!myName) myName = "Murid Cerdik";
-            } else {
-                myName = loggedInUsername;
-            }
+            const rawName = document.getElementById('auth-username') ? document.getElementById('auth-username').value.trim() : "";
+            myName = loggedInUsername || rawName || "Murid Cerdik";
             
             const selected20 = pick20RandomIndices();
             quizData = selected20.map(idx => allQuestionsPool[idx]);
@@ -868,13 +853,15 @@
             document.getElementById('score-hud').style.display = "inline-block";
             document.getElementById('score-hud').innerText = `Markah: 0`;
             document.getElementById('answers-counter').style.display = "none";
+            document.getElementById('live-points-badge').style.display = "inline-block";
+            document.getElementById('live-points-badge').innerText = "⚡ Latihan Santai";
 
             SoundTrack.startGameMusic();
             renderQuestion(0);
         }
 
         // =================================================================
-        // MOD 2: MULTIPLAYER (BILIK GURU & HOS)
+        // MOD MULTIPLAYER (BILIK GURU)
         // =================================================================
         function joinAsPlayer() {
             const pin = document.getElementById('pin-input').value.trim().toUpperCase();
@@ -1012,20 +999,21 @@
         }
 
         // =================================================================
-        // 6. PAPARAN SOALAN & INTERAKSI JAWAPAN
+        // PAPARAN SOALAN
         // =================================================================
         function renderQuestion(idx) {
             clearInterval(previewCountdown);
             clearInterval(timerCountdown);
             clearInterval(liveScoreInterval);
 
+            currentQIndex = idx; // Pastikan indeks terkini sentiasa diselaraskan
             isAnsweringPhase = false;
             myChoiceThisRound = null;
             roundEarnedPoints = 0;
             showScreen('game-screen');
 
             const q = quizData[idx];
-            document.getElementById('q-counter').innerText = `Q: ${idx + 1}/20`;
+            document.getElementById('q-counter').innerText = `Q: ${idx + 1}/${quizData.length}`;
             if (!isHost) document.getElementById('score-hud').innerText = `Markah: ${myScore}`;
             document.getElementById('question-text').innerText = q.q;
             document.getElementById('player-submitted-banner').style.display = "none";
@@ -1058,8 +1046,7 @@
                 }
             });
 
-            // JIKA MOD KENDIRI (SELF-PACED / SOLO):
-            // Paparkan soalan dan pilihan jawapan serta-merta tanpa perlu tunggu 5 saat
+            // MOD KENDIRI (SELF-PACED): Pilihan jawapan dipaparkan serta-merta tanpa fasa menunggu
             if (isSoloMode) {
                 previewBox.style.display = "none";
                 container.style.display = "grid";
@@ -1067,11 +1054,14 @@
                 phaseBadge.innerText = "Ujian Kendiri";
                 phaseBadge.style.background = "#8a2387";
                 phaseBadge.style.color = "#fff";
+                livePtsBadge.style.display = "inline-block";
+                livePtsBadge.innerText = "⚡ 1,000 pts";
+
                 startAnswerPhase();
                 return;
             }
 
-            // JIKA MOD MULTIPLAYER: Ada fasa 5 saat baca soalan
+            // MOD MULTIPLAYER: Fasa 5 saat membaca soalan
             timerEl.classList.add('timer-preview');
             phaseBadge.innerText = "Baca Soalan";
             phaseBadge.style.background = "#ffd700";
@@ -1099,7 +1089,6 @@
             }, 1000);
         }
 
-        // Fasa Menjawab 20 Saat (Butang Muncul & Pengurangan Markah Berdasarkan Kelajuan)
         function startAnswerPhase() {
             isAnsweringPhase = true;
             answerPhaseStartTime = Date.now(); 
@@ -1123,7 +1112,6 @@
             livePtsBadge.style.display = "inline-block";
             livePtsBadge.innerText = "⚡ 1,000 pts";
 
-            // Markah berkurang lancar dari 1,000 ke 500 mengikut milisaat
             clearInterval(liveScoreInterval);
             liveScoreInterval = setInterval(() => {
                 if (!isAnsweringPhase || myChoiceThisRound !== null) return;
@@ -1149,7 +1137,7 @@
                     clearInterval(timerCountdown);
                     clearInterval(liveScoreInterval);
                     if (isSoloMode) {
-                        playerPicksAnswer(0); // Masa tamat dalam mod solo
+                        playerPicksAnswer(0); // Tamat masa mod kendiri
                     } else if (isHost && db) {
                         db.ref(`rooms/${roomPin}`).update({ status: 'reveal' });
                     }
@@ -1157,7 +1145,6 @@
             }, 1000);
         }
 
-        // Murid Menekan Jawapan
         function playerPicksAnswer(choice) {
             if (isHost || !isAnsweringPhase || myChoiceThisRound !== null) return;
             myChoiceThisRound = choice;
@@ -1165,7 +1152,6 @@
             clearInterval(timerCountdown);
 
             const responseTimeMs = Math.max(0, Date.now() - answerPhaseStartTime);
-            
             document.getElementById('options-container').classList.add('disabled-grid');
 
             const q = quizData[currentQIndex];
@@ -1174,19 +1160,17 @@
                 roundEarnedPoints = Math.max(500, Math.round(1000 - (500 * decayRatio)));
                 myScore += roundEarnedPoints;
                 soloCorrectCount++;
-                document.getElementById('live-points-badge').innerText = `⚡ +${roundEarnedPoints} pts (Terkunci)`;
+                document.getElementById('live-points-badge').innerText = `⚡ +${roundEarnedPoints} pts`;
             } else {
                 roundEarnedPoints = 0;
                 document.getElementById('live-points-badge').innerText = `⚡ 0 pts`;
             }
 
-            // Jika mod solo, terus buka skrin semakan jawapan secara kendiri
             if (isSoloMode) {
                 renderFeedbackScreen();
                 return;
             }
 
-            // Jika mod multiplayer, rekod ke Firebase
             document.getElementById('player-submitted-banner').style.display = "block";
             if (db) {
                 db.ref(`rooms/${roomPin}/players/${myId}`).update({ score: myScore });
@@ -1198,9 +1182,6 @@
             }
         }
 
-        // =================================================================
-        // 7. MAKLUM BALAS & SEMAKAN JAWAPAN
-        // =================================================================
         function renderFeedbackScreen() {
             clearInterval(previewCountdown);
             clearInterval(timerCountdown);
@@ -1220,24 +1201,24 @@
 
             ansText.innerText = `Jawapan Betul: ${q.options[q.correct - 1]}`;
 
-            // A. MOD UJIAN KENDIRI (SELF-PACED / SOLO)
+            // KAWALAN MOD KENDIRI (SELF-PACED / SOLO)
             if (isSoloMode) {
                 hostControls.style.display = "none";
                 soloControls.style.display = "block";
                 ptsText.style.display = "inline-block";
 
                 if (myChoiceThisRound === q.correct) {
-                    banner.className = 'card feedback-banner correct-bg';
+                    banner.style.background = "linear-gradient(135deg, #11998e, #38ef7d)";
                     title.innerText = "Tahniah, Betul!";
                     ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
                     SoundTrack.playSfx('correct');
                 } else if (myChoiceThisRound === 0) {
-                    banner.className = 'card feedback-banner wrong-bg';
+                    banner.style.background = "linear-gradient(135deg, #ff416c, #ff4b2b)";
                     title.innerText = "Masa Tamat!";
                     ptsText.innerText = "+0 pts";
                     SoundTrack.playSfx('wrong');
                 } else {
-                    banner.className = 'card feedback-banner wrong-bg';
+                    banner.style.background = "linear-gradient(135deg, #ff416c, #ff4b2b)";
                     title.innerText = "Kurang Tepat!";
                     ptsText.innerText = "+0 pts";
                     SoundTrack.playSfx('wrong');
@@ -1245,10 +1226,10 @@
                 return;
             }
 
-            // B. MOD MULTIPLAYER (SKRIN GURU / HOS)
+            // KAWALAN MOD MULTIPLAYER
             soloControls.style.display = "none";
             if (isHost) {
-                banner.className = 'card feedback-banner host-reveal-bg';
+                banner.style.background = "linear-gradient(135deg, #302b63, #46178f)";
                 title.innerText = "Pusingan Selesai!";
                 ptsText.style.display = "none";
                 hostControls.style.display = "block";
@@ -1268,30 +1249,23 @@
                     }
                 }, 1000);
             } else {
-                // B. MOD MULTIPLAYER (PERANTI MURID)
                 ptsText.style.display = "inline-block";
                 hostControls.style.display = "none";
 
                 if (myChoiceThisRound === q.correct) {
-                    banner.className = 'card feedback-banner correct-bg';
+                    banner.style.background = "linear-gradient(135deg, #11998e, #38ef7d)";
                     title.innerText = "Tahniah, Betul!";
                     ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
                     SoundTrack.playSfx('correct');
-                } else if (myChoiceThisRound === null || myChoiceThisRound === 0) {
-                    banner.className = 'card feedback-banner wrong-bg';
-                    title.innerText = "Masa Tamat!";
-                    ptsText.innerText = "+0 pts";
-                    SoundTrack.playSfx('wrong');
                 } else {
-                    banner.className = 'card feedback-banner wrong-bg';
-                    title.innerText = "Kurang Tepat!";
+                    banner.style.background = "linear-gradient(135deg, #ff416c, #ff4b2b)";
+                    title.innerText = (myChoiceThisRound === null || myChoiceThisRound === 0) ? "Masa Tamat!" : "Kurang Tepat!";
                     ptsText.innerText = "+0 pts";
                     SoundTrack.playSfx('wrong');
                 }
             }
         }
 
-        // Murid menekan "Soalan Seterusnya" dalam Mod Latihan Kendiri
         function soloNextQuestion() {
             currentQIndex++;
             if (currentQIndex < quizData.length) {
@@ -1301,7 +1275,6 @@
             }
         }
 
-        // Guru maju ke soalan seterusnya dalam Mod Multiplayer
         function hostNextQuestion() {
             clearInterval(autoAdvanceCountdown);
             if (!db) return;
@@ -1317,9 +1290,6 @@
             }
         }
 
-        // =================================================================
-        // 8. KEPUTUSAN AKHIR & PODIUM
-        // =================================================================
         function showSoloEndScreen() {
             SoundTrack.startPodiumFanfare();
             showScreen('end-screen');
@@ -1332,18 +1302,13 @@
             document.getElementById('solo-final-score').innerText = myScore.toLocaleString();
             document.getElementById('solo-accuracy').innerText = `${soloCorrectCount} / ${quizData.length}`;
 
-            // Skor Bintang
             const starsEl = document.getElementById('solo-stars');
-            const statusEl = document.getElementById('solo-status-text');
             if (soloCorrectCount >= 18) {
                 starsEl.innerText = "⭐⭐⭐";
-                statusEl.innerText = "Luar Biasa / Cemerlang! 🌟";
             } else if (soloCorrectCount >= 12) {
                 starsEl.innerText = "⭐⭐";
-                statusEl.innerText = "Bagus, Teruskan Usaha! 👍";
             } else {
                 starsEl.innerText = "⭐";
-                statusEl.innerText = "Cuba Lagi Untuk Capai 3 Bintang! 💪";
             }
         }
 
@@ -1374,9 +1339,9 @@
                     const tr = document.createElement('tr');
                     if (p.id === myId) tr.classList.add('my-row');
                     tr.innerHTML = `
-                        <td><strong>#${idx + 1}</strong></td>
-                        <td>${escapeHtml(p.name)} ${p.id === myId ? '(Anda)' : ''}</td>
-                        <td>${(p.score || 0).toLocaleString()}</td>
+                        <td style="padding:12px;"><strong>#${idx + 1}</strong></td>
+                        <td style="padding:12px;">${escapeHtml(p.name)} ${p.id === myId ? '(Anda)' : ''}</td>
+                        <td style="padding:12px;">${(p.score || 0).toLocaleString()}</td>
                     `;
                     tbody.appendChild(tr);
                 });
