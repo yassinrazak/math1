@@ -16,7 +16,6 @@
             padding: 0; 
             font-family: 'Montserrat', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
         }
 
         :root {
@@ -38,7 +37,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: env(safe-area-inset-top, 6px) 10px env(safe-area-inset-bottom, 6px) 10px;
+            padding: clamp(8px, 1.5vh, 20px) clamp(10px, 2vw, 24px);
         }
 
         @keyframes gradientBG {
@@ -47,15 +46,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- HEADER ATAS (NAV & AUDIO TOGGLE SEBARIS) --- */
+        /* --- HEADER ADAPTIF (DESKTOP, TABLET & MOBILE) --- */
         header {
             width: 100%;
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 44px;
+            height: clamp(42px, 5vh, 56px);
             flex-shrink: 0;
             z-index: 100;
         }
@@ -63,62 +62,67 @@
         .logo-group {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.22);
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 40px;
             text-decoration: none;
-            height: 38px;
+            height: 100%;
+            transition: background 0.2s, transform 0.2s;
         }
+        .logo-group:hover { background: rgba(255, 255, 255, 0.2); }
 
         .dept-logo {
-            width: 26px;
-            height: 26px;
+            width: clamp(26px, 3.5vw, 34px);
+            height: clamp(26px, 3.5vw, 34px);
             border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .logo-text {
             color: #fff;
-            font-size: 0.72rem;
+            font-size: clamp(0.72rem, 1.2vw, 0.95rem);
             font-weight: 900;
-            line-height: 1.1;
+            line-height: 1.15;
             display: flex;
             flex-direction: column;
         }
 
         .logo-text span {
-            font-size: 0.52rem;
+            font-size: clamp(0.52rem, 0.9vw, 0.65rem);
             color: #00e096;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
         .audio-toggle {
             background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #fff;
-            font-size: 0.72rem;
+            font-size: clamp(0.72rem, 1.1vw, 0.88rem);
             font-weight: 800;
-            padding: 0 14px;
+            padding: 0 clamp(12px, 1.5vw, 18px);
             border-radius: 40px;
             cursor: pointer;
-            height: 38px;
+            height: 100%;
             display: inline-flex;
             align-items: center;
             transition: 0.2s;
         }
+        .audio-toggle:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-1px); }
         .audio-toggle:active { transform: scale(0.96); }
 
-        /* --- KAWASAN KANDUNGAN UTAMA (VIEWPORT LOCKED) --- */
+        /* --- KAWASAN KANDUNGAN UTAMA --- */
         main {
             flex: 1 1 auto;
             width: 100%;
-            max-width: 720px;
+            max-width: 860px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -147,111 +151,126 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Card Padat */
+        /* Card Adaptif Responsive */
         .card {
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            padding: 14px 16px;
-            border-radius: 18px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: clamp(14px, 2.5vw, 32px);
+            border-radius: clamp(16px, 2.5vw, 24px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.45);
             width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
             max-height: 100%;
         }
 
+        .card-large {
+            max-width: 780px;
+        }
+
         .logo-title {
-            font-size: 1.55rem;
+            font-size: clamp(1.5rem, 3.5vw, 2.4rem);
             font-weight: 900;
             letter-spacing: -0.5px;
             line-height: 1.1;
+            text-align: center;
         }
 
         .subtitle {
-            font-size: 0.75rem;
+            font-size: clamp(0.72rem, 1.3vw, 0.95rem);
             color: #bca0e6;
             font-weight: 700;
-            margin: 4px 0 10px;
+            margin: 4px 0 clamp(8px, 1.5vh, 16px);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
+            text-align: center;
         }
 
         .input-group {
-            margin: 6px 0;
+            margin: clamp(6px, 1.2vh, 12px) 0;
             text-align: left;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.68rem;
+            font-size: clamp(0.68rem, 1vw, 0.8rem);
             font-weight: 800;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             color: #e5d4fc;
             text-transform: uppercase;
         }
 
         .text-input {
             width: 100%;
-            padding: 10px 14px;
-            font-size: 0.95rem;
+            padding: clamp(10px, 1.5vh, 14px) clamp(12px, 1.5vw, 16px);
+            font-size: clamp(0.95rem, 1.3vw, 1.1rem);
             font-weight: 700;
             color: #fff;
             background: rgba(0, 0, 0, 0.35);
-            border: 1.5px solid rgba(255, 255, 255, 0.18);
-            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
             outline: none;
+            transition: 0.2s;
         }
         .text-input:focus { border-color: #00e096; background: rgba(0,0,0,0.5); }
 
         .btn-row { 
             display: flex; 
-            gap: 8px; 
-            margin-top: 8px; 
+            gap: 10px; 
+            margin-top: clamp(8px, 1.5vh, 14px); 
         }
 
         .btn-main {
             flex: 1;
             color: #fff;
             border: none;
-            padding: 11px 12px;
-            font-size: 0.85rem;
+            padding: clamp(10px, 1.6vh, 15px) 14px;
+            font-size: clamp(0.85rem, 1.2vw, 1.05rem);
             font-weight: 800;
             text-transform: uppercase;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             background: linear-gradient(135deg, #00b09b, #96c93d);
-            box-shadow: 0 4px 14px rgba(0, 176, 155, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            line-height: 1.1;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-main:active { transform: scale(0.97); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 176, 155, 0.55); }
+        .btn-main:active { transform: translateY(1px); }
 
-        .btn-host { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 4px 14px rgba(241, 39, 17, 0.35); }
+        .btn-host { 
+            background: linear-gradient(135deg, #f12711, #f5af19); 
+            box-shadow: 0 4px 15px rgba(241, 39, 17, 0.35); 
+        }
+        .btn-host:hover { box-shadow: 0 8px 22px rgba(241, 39, 17, 0.5); }
 
         .btn-solo {
             width: 100%;
             background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
-            box-shadow: 0 4px 16px rgba(233, 64, 87, 0.4);
-            padding: 12px 14px;
-            font-size: 0.92rem;
+            box-shadow: 0 6px 18px rgba(233, 64, 87, 0.45);
+            padding: clamp(12px, 1.8vh, 16px) 16px;
+            font-size: clamp(0.92rem, 1.3vw, 1.15rem);
             margin-top: 4px;
         }
+        .btn-solo:hover { box-shadow: 0 10px 25px rgba(233, 64, 87, 0.6); }
 
         .divider-label {
-            margin: 8px 0 6px;
-            font-size: 0.65rem;
+            margin: clamp(8px, 1.5vh, 16px) 0;
+            font-size: clamp(0.65rem, 1vw, 0.78rem);
             font-weight: 800;
             color: #ffd700;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
         .divider-label::before, .divider-label::after {
             content: "";
@@ -260,18 +279,18 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* --- LOBBY COMPACT --- */
+        /* --- LOBBY COMPACT & PROPORTIONAL --- */
         .pin-pill {
             display: inline-block;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #000;
-            font-size: 1.8rem;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 900;
-            padding: 4px 24px;
-            border-radius: 30px;
+            padding: 4px clamp(20px, 4vw, 36px);
+            border-radius: 40px;
             margin: 6px auto;
-            letter-spacing: 2px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.35);
+            letter-spacing: 3px;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35);
         }
 
         .qr-card-container {
@@ -280,69 +299,69 @@
             align-items: center;
             background: rgba(0,0,0,0.25);
             border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 14px;
+            padding: clamp(8px, 1.5vh, 14px);
             margin: 6px auto;
-            max-width: 200px;
+            max-width: clamp(160px, 25vw, 220px);
         }
         .qr-image-wrapper {
             background: #fff;
-            padding: 4px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 10px;
         }
         .qr-image-wrapper img {
-            width: 110px;
-            height: 110px;
+            width: clamp(100px, 15vw, 140px);
+            height: clamp(100px, 15vw, 140px);
             display: block;
         }
         .qr-scan-label {
-            font-size: 0.72rem;
+            font-size: clamp(0.7rem, 1.1vw, 0.85rem);
             font-weight: 800;
             color: #ffd700;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         .roster-header {
-            font-size: 0.75rem;
+            font-size: clamp(0.75rem, 1.2vw, 0.95rem);
             font-weight: 700;
             color: #e5d4fc;
-            margin: 6px 0 4px;
+            margin: 8px 0 6px;
         }
         .player-roster {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 6px;
-            max-height: 70px;
+            gap: 8px;
+            max-height: clamp(70px, 14vh, 120px);
             overflow-y: auto;
-            padding: 6px;
+            padding: 8px;
             background: rgba(0,0,0,0.2);
-            border-radius: 10px;
+            border-radius: 12px;
         }
         .player-chip {
             background: #fff;
             color: #1a0b2e;
             font-weight: 800;
-            font-size: 0.72rem;
-            padding: 4px 10px;
+            font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+            padding: 4px 12px;
             border-radius: 20px;
         }
 
         .pulse-loader {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(255,255,255,0.15);
+            width: clamp(32px, 5vw, 44px);
+            height: clamp(32px, 5vw, 44px);
+            border: 3.5px solid rgba(255,255,255,0.15);
             border-top-color: #00e096;
             border-radius: 50%;
             animation: spin 1s infinite linear;
-            margin: 6px auto;
+            margin: 8px auto;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- SCREEN 3: GAMEPLAY (ZERO SCROLL) --- */
+        /* --- SCREEN 3: GAMEPLAY (DESKTOP / TABLET / MOBILE) --- */
         #game-screen {
             justify-content: space-between;
-            gap: 6px;
+            gap: clamp(6px, 1.5vh, 14px);
         }
 
         .status-bar {
@@ -351,18 +370,18 @@
             align-items: center;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px);
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 0.76rem;
+            padding: clamp(6px, 1.2vh, 10px) clamp(10px, 2vw, 18px);
+            border-radius: 14px;
+            font-size: clamp(0.75rem, 1.2vw, 0.92rem);
             font-weight: 800;
             border: 1px solid rgba(255, 255, 255, 0.14);
             flex-shrink: 0;
         }
 
         .phase-badge, .answers-counter-badge, .points-decay-badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.68rem;
+            padding: 2px clamp(8px, 1vw, 14px);
+            border-radius: 14px;
+            font-size: clamp(0.68rem, 1vw, 0.8rem);
             font-weight: 900;
         }
         .phase-badge { background: #ffd700; color: #1a0b2e; }
@@ -373,91 +392,95 @@
             background: #ffffff;
             color: #1a0b2e;
             position: relative;
-            padding: 16px 14px 10px;
-            border-radius: 16px;
+            padding: clamp(16px, 2.5vh, 28px) clamp(14px, 2.5vw, 24px) clamp(10px, 1.5vh, 18px);
+            border-radius: clamp(16px, 2vw, 22px);
             flex: 0 1 auto;
-            min-height: 90px;
-            max-height: 130px;
+            min-height: clamp(85px, 15vh, 130px);
+            max-height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-            margin-top: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            margin-top: clamp(12px, 2vh, 18px);
         }
 
         .timer-badge {
             position: absolute;
-            top: -18px;
+            top: clamp(-18px, -2.5vh, -24px);
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, #ff00cc, #333399);
             color: #fff;
-            width: 40px;
-            height: 40px;
+            width: clamp(40px, 6vh, 56px);
+            height: clamp(40px, 6vh, 56px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: clamp(1.15rem, 2vh, 1.6rem);
             font-weight: 900;
-            border: 3px solid #1f0b40;
-            box-shadow: 0 0 12px rgba(255, 0, 204, 0.5);
+            border: clamp(3px, 0.4vh, 4px) solid #1f0b40;
+            box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
         }
         .timer-preview {
             background: linear-gradient(135deg, #f9d423, #ff4e50);
-            box-shadow: 0 0 12px rgba(249, 212, 35, 0.6);
+            box-shadow: 0 0 15px rgba(249, 212, 35, 0.6);
         }
 
         #question-text {
-            font-size: 1.45rem;
+            font-size: clamp(1.4rem, 4vw, 2.3rem);
             font-weight: 900;
             line-height: 1.2;
+            text-align: center;
         }
 
         #preview-box {
-            padding: 16px 12px;
+            padding: clamp(14px, 2vh, 24px) clamp(12px, 2vw, 20px);
             background: rgba(255,255,255,0.06);
-            border-radius: 12px;
-            border: 1.5px dashed rgba(255,255,255,0.25);
+            border-radius: 14px;
+            border: 2px dashed rgba(255,255,255,0.25);
             flex: 1 1 auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
         }
         .preview-text {
-            font-size: 0.92rem;
+            font-size: clamp(0.9rem, 1.8vw, 1.25rem);
             font-weight: 800;
             color: #ffd700;
             line-height: 1.35;
         }
 
-        /* 2x2 Grid Jawapan Butang Besar Penuh */
+        /* 2x2 Grid Jawapan Butang */
         .options-grid {
             display: none;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 8px;
+            gap: clamp(8px, 1.5vw, 16px);
             flex: 1 1 auto;
-            min-height: 160px;
+            min-height: clamp(160px, 26vh, 260px);
         }
 
         .option-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 8px;
-            font-size: 1.35rem;
+            gap: clamp(8px, 1.5vw, 14px);
+            padding: clamp(8px, 1.5vh, 16px);
+            font-size: clamp(1.3rem, 3vw, 2rem);
             font-weight: 900;
             color: #fff;
             border: none;
-            border-radius: 12px;
+            border-radius: clamp(12px, 1.8vw, 16px);
             cursor: pointer;
             width: 100%;
             height: 100%;
+            transition: transform 0.15s ease, filter 0.15s ease;
         }
-        .option-item:active { transform: scale(0.96); }
-        .option-item .shape { font-size: 1.3rem; }
+        .option-item:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .option-item:active { transform: scale(0.97); }
+        .option-item .shape { font-size: clamp(1.2rem, 2.5vw, 1.8rem); }
 
         .btn-red { background: linear-gradient(135deg, #ff416c, #ff4b2b); box-shadow: 0 4px 0 #b3213a; }
         .btn-blue { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 4px 0 #0052b3; }
@@ -465,6 +488,7 @@
         .btn-green { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 4px 0 #0b6b5a; }
 
         div.option-item { cursor: default; }
+        div.option-item:hover { transform: none; filter: none; }
         .disabled-grid { pointer-events: none; opacity: 0.65; }
 
         #player-submitted-banner {
@@ -472,17 +496,18 @@
             background: rgba(0, 224, 150, 0.2);
             border: 1.5px solid #00e096;
             color: #00e096;
-            font-size: 0.82rem;
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
             font-weight: 800;
-            padding: 6px;
-            border-radius: 10px;
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
             flex-shrink: 0;
         }
 
-        /* --- SCREEN 4: FEEDBACK SCREEN --- */
+        /* --- SCREEN 4: FEEDBACK BANNER --- */
         .feedback-banner {
-            padding: 20px 16px;
-            border-radius: 18px;
+            padding: clamp(20px, 3vh, 36px) clamp(16px, 2vw, 24px);
+            border-radius: 20px;
             color: #fff;
             text-align: center;
         }
@@ -490,35 +515,35 @@
         .wrong-bg { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
         .host-reveal-bg { background: linear-gradient(135deg, #302b63, #46178f); border: 2px solid #00e096; }
 
-        #feedback-title { font-size: 1.7rem; font-weight: 900; margin-bottom: 6px; }
+        #feedback-title { font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 900; margin-bottom: 6px; }
         #correct-answer-text {
-            font-size: 1.05rem;
+            font-size: clamp(1rem, 2vw, 1.4rem);
             background: rgba(0,0,0,0.3);
-            padding: 8px 14px;
-            border-radius: 10px;
+            padding: clamp(6px, 1vh, 10px) clamp(12px, 2vw, 20px);
+            border-radius: 12px;
             display: inline-block;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
-        #feedback-points { font-size: 1.45rem; font-weight: 900; }
+        #feedback-points { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 900; }
 
-        /* --- SCREEN 5: END & PODIUM --- */
+        /* --- SCREEN 5: PODIUM & SCORE --- */
         .solo-score-box {
             background: rgba(255, 255, 255, 0.08);
             border: 1.5px solid rgba(255, 255, 255, 0.18);
-            border-radius: 14px;
-            padding: 12px;
-            margin: 10px 0;
+            border-radius: 16px;
+            padding: clamp(12px, 2vh, 20px);
+            margin: clamp(8px, 1.5vh, 16px) 0;
             text-align: center;
         }
-        .solo-stars { font-size: 1.8rem; line-height: 1; }
-        .solo-score-number { font-size: 2.3rem; font-weight: 900; color: #00e096; line-height: 1.1; }
+        .solo-stars { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1; }
+        .solo-score-number { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 900; color: #00e096; line-height: 1.1; }
         .solo-stats-row { 
             display: flex; 
             justify-content: center; 
-            gap: 12px; 
-            margin-top: 6px; 
-            font-size: 0.8rem; 
+            gap: 16px; 
+            margin-top: 8px; 
+            font-size: clamp(0.8rem, 1.2vw, 1rem); 
             font-weight: 700; 
         }
 
@@ -526,65 +551,79 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            gap: 8px;
-            margin: 14px 0 8px;
-            height: 120px;
+            gap: clamp(8px, 1.5vw, 16px);
+            margin: clamp(10px, 2vh, 18px) 0 8px;
+            height: clamp(110px, 20vh, 160px);
         }
         .podium-col {
             width: 30%;
-            border-radius: 10px 10px 0 0;
+            border-radius: 12px 12px 0 0;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 6px 4px;
+            padding: 8px 4px;
             text-align: center;
             font-weight: 900;
             position: relative;
-            font-size: 0.72rem;
+            font-size: clamp(0.72rem, 1vw, 0.88rem);
         }
         .pod-1 { height: 100%; background: linear-gradient(to top, #f9d423, #ff4e50); }
         .pod-2 { height: 75%; background: linear-gradient(to top, #bdc3c7, #2c3e50); }
         .pod-3 { height: 55%; background: linear-gradient(to top, #e65c00, #F9D423); }
-        .medal { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 1.25rem; }
+        .medal { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: clamp(1.2rem, 2vw, 1.8rem); }
 
         .winner-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 4px;
-            font-size: 0.75rem;
-            max-height: 90px;
+            font-size: clamp(0.75rem, 1vw, 0.88rem);
+            max-height: clamp(80px, 14vh, 120px);
             overflow-y: auto;
             display: block;
         }
         .winner-table thead, .winner-table tbody tr { display: table; width: 100%; table-layout: fixed; }
-        .winner-table th, .winner-table td { padding: 6px 8px; text-align: left; }
+        .winner-table th, .winner-table td { padding: 6px 10px; text-align: left; }
         .winner-table th { background: rgba(255,255,255,0.1); color: #fff; }
         .winner-table td { background: rgba(255,255,255,0.06); color: #fff; font-weight: 700; }
         .my-row td { background: rgba(0,224,150,0.25) !important; color: #00e096; font-weight: 900; }
 
-        /* --- FOOTER COMPACT (SEBARIS) --- */
+        /* --- FOOTER ADAPTIF --- */
         footer {
             width: 100%;
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
-            height: 26px;
+            height: clamp(26px, 3.5vh, 34px);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.62rem;
+            font-size: clamp(0.62rem, 0.9vw, 0.75rem);
             color: rgba(255, 255, 255, 0.6);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding: 0 4px;
         }
-        .footer-logos { display: flex; align-items: center; gap: 6px; }
-        .footer-logos img { height: 16px; }
+        .footer-logos { display: flex; align-items: center; gap: 8px; }
+        .footer-logos img { height: clamp(16px, 2vh, 20px); }
         .pulse-dot { width: 6px; height: 6px; background: #00e096; border-radius: 50%; display: inline-block; }
+
+        /* --- MEDIA QUERY: TABLET & DESKTOP ENHANCEMENT --- */
+        @media (min-width: 768px) {
+            body { padding: 20px 24px; }
+            .card { max-width: 620px; }
+            .card-large { max-width: 820px; }
+            .options-grid { min-height: 220px; }
+            .question-box { min-height: 110px; }
+        }
+
+        @media (min-width: 1024px) {
+            .options-grid { min-height: 240px; }
+            .option-item:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,0.3); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header Atas (Nav + Audio) -->
+    <!-- Header (Nav + Audio) -->
     <header>
         <a href="#" class="logo-group">
             <img src="https://lh3.googleusercontent.com/d/1Bgug_Eh1Hpj1I97QobahP3oUQuNGghgI" alt="Logo" class="dept-logo">
@@ -598,7 +637,7 @@
 
     <!-- Kawasan Utama Permainan -->
     <main>
-        <!-- SCREEN 1: LOGIN -->
+        <!-- SCREEN 1: LOGIN / DASHBOARD -->
         <div id="login-screen" class="screen active">
             <div class="card">
                 <div class="logo-title">EZ-MATH!</div>
@@ -629,10 +668,10 @@
 
         <!-- SCREEN 2: LOBBY -->
         <div id="lobby-screen" class="screen">
-            <div class="card">
+            <div class="card card-large">
                 <div class="subtitle" style="margin-bottom:0;">GAME PIN</div>
                 <div class="pin-pill" id="lobby-pin-display">------</div>
-                <p id="lobby-role-msg" style="font-size:0.75rem; margin-bottom:4px;">Menunggu murid menyertai...</p>
+                <p id="lobby-role-msg" style="font-size:clamp(0.75rem,1.2vw,0.9rem); margin-bottom:6px; text-align:center;">Menunggu murid menyertai...</p>
 
                 <div id="host-qr-section" class="qr-card-container" style="display: none;">
                     <div class="qr-image-wrapper">
@@ -641,16 +680,16 @@
                     <div class="qr-scan-label">📷 Imbas Untuk Masuk</div>
                 </div>
 
-                <div id="player-waiting-spinner" style="display: none; padding: 4px 0;">
+                <div id="player-waiting-spinner" style="display: none; padding: 8px 0; text-align:center;">
                     <div class="pulse-loader"></div>
-                    <p style="color:#00e096; font-size:0.85rem; font-weight:800;">Anda sudah masuk!</p>
-                    <p style="color:#bca0e6; font-size:0.7rem;">Menunggu guru memulakan kuiz...</p>
+                    <p style="color:#00e096; font-size:clamp(0.85rem,1.4vw,1.1rem); font-weight:800;">Anda sudah masuk!</p>
+                    <p style="color:#bca0e6; font-size:clamp(0.72rem,1vw,0.85rem);">Menunggu guru memulakan kuiz...</p>
                 </div>
 
-                <div class="roster-header">Murid Masuk: <span id="roster-count" style="color:#00e096;">0</span></div>
+                <div class="roster-header" style="text-align:center;">Murid Masuk: <span id="roster-count" style="color:#00e096;">0</span></div>
                 <div class="player-roster" id="player-roster"></div>
 
-                <button class="btn-main" id="host-start-btn" onclick="hostLaunchesQuiz()" style="display: none; margin-top: 10px; width: 100%;">
+                <button class="btn-main" id="host-start-btn" onclick="hostLaunchesQuiz()" style="display: none; margin-top: 12px; width: 100%;">
                     🚀 Mulakan Kuiz
                 </button>
             </div>
@@ -663,7 +702,7 @@
                 <span id="round-phase-indicator" class="phase-badge">Baca Soalan</span>
                 <span id="live-points-badge" class="points-decay-badge" style="display: none;">⚡ 1,000 pts</span>
                 <span id="answers-counter" class="answers-counter-badge" style="display: none;">0/0</span>
-                <span id="q-counter" style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px;">Q: 1/20</span>
+                <span id="q-counter" style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px;">Q: 1/20</span>
                 <span id="score-hud">Markah: 0</span>
             </div>
 
@@ -673,7 +712,7 @@
             </div>
 
             <div id="preview-box">
-                <div class="preview-text">📖 Sila baca soalan...<br>Pilihan jawapan akan muncul sebentar lagi!</div>
+                <div class="preview-text">📖 Sila baca soalan dengan teliti...<br>Pilihan jawapan akan muncul sebentar lagi!</div>
             </div>
 
             <div class="options-grid" id="options-container"></div>
@@ -687,12 +726,12 @@
                 <div id="correct-answer-text"></div>
                 <h2 id="feedback-points">+0 pts</h2>
 
-                <div id="host-feedback-controls" style="display: none; margin-top: 10px;">
-                    <p id="auto-advance-msg" style="color: #ffd700; margin-bottom: 6px; font-weight: 800; font-size:0.75rem;">Soalan seterusnya...</p>
+                <div id="host-feedback-controls" style="display: none; margin-top: 14px;">
+                    <p id="auto-advance-msg" style="color: #ffd700; margin-bottom: 8px; font-weight: 800; font-size:clamp(0.75rem,1.2vw,0.9rem);">Soalan seterusnya...</p>
                     <button class="btn-main" onclick="hostNextQuestion()" style="width: 100%;">Soalan Seterusnya ▶</button>
                 </div>
 
-                <div id="solo-feedback-controls" style="display: none; margin-top: 10px;">
+                <div id="solo-feedback-controls" style="display: none; margin-top: 14px;">
                     <button class="btn-main" onclick="soloNextQuestion()" style="width: 100%;">
                         Soalan Seterusnya ▶
                     </button>
@@ -702,15 +741,15 @@
 
         <!-- SCREEN 5: FINAL PODIUM -->
         <div id="end-screen" class="screen">
-            <div class="card">
-                <div class="logo-title" id="final-screen-title" style="font-size: 1.45rem;">PODIUM PEMENANG</div>
-                <div class="subtitle" id="winner-room-tag" style="margin-bottom:6px;">Matematik Operasi Tolak</div>
+            <div class="card card-large">
+                <div class="logo-title" id="final-screen-title">PODIUM PEMENANG</div>
+                <div class="subtitle" id="winner-room-tag">Matematik Operasi Tolak</div>
 
                 <div id="solo-result-card" style="display: none;">
                     <div class="solo-score-box">
                         <div class="solo-stars" id="solo-stars">⭐⭐⭐</div>
                         <div class="solo-score-number" id="solo-final-score">0</div>
-                        <div style="font-size: 0.65rem; color: #ffd700; text-transform: uppercase; font-weight: 800;">Jumlah Markah Terkumpul</div>
+                        <div style="font-size: clamp(0.7rem,1.1vw,0.85rem); color: #ffd700; text-transform: uppercase; font-weight: 800;">Jumlah Markah Terkumpul</div>
                         
                         <div class="solo-stats-row">
                             <div>Ketepatan: <span id="solo-accuracy" style="color: #00e096;">0 / 20</span></div>
@@ -731,7 +770,7 @@
                         </div>
                         <div class="podium-col pod-1">
                             <div class="medal">🥇</div>
-                            <div id="p1-name" style="font-size:0.85rem;">-</div>
+                            <div id="p1-name" style="font-size:clamp(0.85rem,1.3vw,1.1rem);">-</div>
                             <div id="p1-score">0 pts</div>
                         </div>
                         <div class="podium-col pod-3">
@@ -753,14 +792,14 @@
                     </table>
                 </div>
 
-                <button class="btn-main" onclick="location.reload()" style="margin-top: 8px; width: 100%;">
+                <button class="btn-main" onclick="location.reload()" style="margin-top: 12px; width: 100%;">
                     🏠 Menu Utama
                 </button>
             </div>
         </div>
     </main>
 
-    <!-- Footer Padat Sebaris -->
+    <!-- Footer Adaptif -->
     <footer>
         <div class="footer-logos">
             <img src="https://lh3.googleusercontent.com/d/1Bgug_Eh1Hpj1I97QobahP3oUQuNGghgI" alt="Logo">
@@ -771,7 +810,7 @@
     </footer>
 
     <script>
-        // Penyelarasan ketinggian skrin dinamik mudah alih
+        // Penyelarasan ketinggian skrin dinamik untuk telefon dan tablet
         function resetAppHeight() {
             document.documentElement.style.setProperty('--app-h', `${window.innerHeight}px`);
         }
@@ -904,7 +943,7 @@
         catch (e) { console.warn("Firebase tidak disambung:", e); }
 
         // =================================================================
-        // 3. BANK 100 SOALAN TOLAK (SET 1 - 4)
+        // 3. BANK 100 SOALAN OPERASI TOLAK (SET 1 - 4)
         // =================================================================
         const allQuestionsPool = [
             { q: "2 − 1 = ?", options: ["0", "1", "2", "3"], correct: 2 },
@@ -1010,7 +1049,7 @@
         ];
 
         // =================================================================
-        // 4. LOGIK PERMAINAN & MULTIPLAYER
+        // 4. LOGIK MULTIPLAYER & PEMILIHAN SOALAN
         // =================================================================
         let isHost = false;
         let isSoloMode = false;
@@ -1200,7 +1239,7 @@
         }
 
         // =================================================================
-        // 5. PAPARAN SOALAN & PILIHAN
+        // 5. PAPARAN SOALAN & PILIHAN JAWAPAN
         // =================================================================
         function renderQuestion(idx) {
             clearInterval(previewCountdown);
@@ -1372,7 +1411,7 @@
         }
 
         // =================================================================
-        // 6. MAKLUM BALAS PUSINGAN
+        // 6. MAKLUM BALAS & SEMAKAN JAWAPAN
         // =================================================================
         function renderFeedbackScreen() {
             clearInterval(previewCountdown);
@@ -1486,7 +1525,7 @@
         }
 
         // =================================================================
-        // 7. PODIUM KEPUTUSAN
+        // 7. KEPUTUSAN AKHIR & PODIUM
         // =================================================================
         function showSoloEndScreen() {
             SoundTrack.startPodiumFanfare();
