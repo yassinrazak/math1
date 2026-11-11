@@ -57,34 +57,37 @@
             height: clamp(42px, 5vh, 56px);
             flex-shrink: 0;
             z-index: 100;
+            gap: 8px;
         }
 
         .logo-group {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.22);
-            padding: 4px 14px;
+            padding: 4px clamp(8px, 1.2vw, 14px);
             border-radius: 40px;
             text-decoration: none;
             height: 100%;
+            cursor: pointer;
             transition: background 0.2s, transform 0.2s;
         }
-        .logo-group:hover { background: rgba(255, 255, 255, 0.2); }
+        .logo-group:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px); }
 
         .dept-logo {
-            width: clamp(26px, 3.5vw, 34px);
-            height: clamp(26px, 3.5vw, 34px);
+            width: clamp(24px, 3.2vw, 34px);
+            height: clamp(24px, 3.2vw, 34px);
             border-radius: 50%;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
 
         .logo-text {
             color: #fff;
-            font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+            font-size: clamp(0.68rem, 1.1vw, 0.95rem);
             font-weight: 900;
             line-height: 1.15;
             display: flex;
@@ -92,31 +95,51 @@
         }
 
         .logo-text span {
-            font-size: clamp(0.52rem, 0.9vw, 0.65rem);
+            font-size: clamp(0.5rem, 0.8vw, 0.65rem);
             color: #00e096;
             font-weight: 700;
             letter-spacing: 0.8px;
             text-transform: uppercase;
         }
 
-        .audio-toggle {
+        /* Kumpulan Butang Tindakan Header */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+        }
+
+        .header-btn {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.22);
             color: #fff;
-            font-size: clamp(0.72rem, 1.1vw, 0.88rem);
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
             font-weight: 800;
-            padding: 0 clamp(12px, 1.5vw, 18px);
+            padding: 0 clamp(10px, 1.2vw, 16px);
             border-radius: 40px;
             cursor: pointer;
             height: 100%;
             display: inline-flex;
             align-items: center;
-            transition: 0.2s;
+            justify-content: center;
+            gap: 4px;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap;
         }
-        .audio-toggle:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-1px); }
-        .audio-toggle:active { transform: scale(0.96); }
+        .header-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-1px); }
+        .header-btn:active { transform: scale(0.96); }
+
+        .btn-home {
+            background: rgba(255, 215, 0, 0.18);
+            border-color: rgba(255, 215, 0, 0.35);
+            color: #ffd700;
+        }
+        .btn-home:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
 
         /* --- KAWASAN KANDUNGAN UTAMA --- */
         main {
@@ -358,7 +381,7 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- SCREEN 3: GAMEPLAY (DESKTOP / TABLET / MOBILE) --- */
+        /* --- SCREEN 3: GAMEPLAY --- */
         #game-screen {
             justify-content: space-between;
             gap: clamp(6px, 1.5vh, 14px);
@@ -452,7 +475,7 @@
             line-height: 1.35;
         }
 
-        /* 2x2 Grid Jawapan Butang */
+        /* 2x2 Grid Jawapan */
         .options-grid {
             display: none;
             grid-template-columns: 1fr 1fr;
@@ -606,7 +629,7 @@
         .footer-logos img { height: clamp(16px, 2vh, 20px); }
         .pulse-dot { width: 6px; height: 6px; background: #00e096; border-radius: 50%; display: inline-block; }
 
-        /* --- MEDIA QUERY: TABLET & DESKTOP ENHANCEMENT --- */
+        /* --- MEDIA QUERY: TABLET & DESKTOP --- */
         @media (min-width: 768px) {
             body { padding: 20px 24px; }
             .card { max-width: 620px; }
@@ -623,16 +646,20 @@
 </head>
 <body>
 
-    <!-- Header (Nav + Audio) -->
+    <!-- Header Terapung (Logo + Butang Laman Utama + Audio) -->
     <header>
-        <a href="#" class="logo-group">
+        <a href="#" class="logo-group" onclick="goHome(); return false;" title="Kembali ke Laman Utama">
             <img src="https://lh3.googleusercontent.com/d/1Bgug_Eh1Hpj1I97QobahP3oUQuNGghgI" alt="Logo" class="dept-logo">
             <div class="logo-text">
                 TADIKA ANNUR
                 <span>EXPLORE EXPERIENCE LEARN</span>
             </div>
         </a>
-        <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊 Bunyi ON</button>
+
+        <div class="header-actions">
+            <button class="header-btn btn-home" onclick="goHome()" title="Kembali ke Laman Utama">🏠 Utama</button>
+            <button class="header-btn" id="audio-btn" onclick="toggleAudio()">🔊 Bunyi ON</button>
+        </div>
     </header>
 
     <!-- Kawasan Utama Permainan -->
@@ -817,6 +844,26 @@
         window.addEventListener('resize', resetAppHeight);
         window.addEventListener('orientationchange', () => setTimeout(resetAppHeight, 100));
         resetAppHeight();
+
+        // Fungsi Kembali ke Laman Utama (Front Page)
+        function goHome() {
+            const isPlaying = document.getElementById('game-screen').classList.contains('active') ||
+                              document.getElementById('lobby-screen').classList.contains('active') ||
+                              document.getElementById('feedback-screen').classList.contains('active');
+
+            if (isPlaying) {
+                if (!confirm("Adakah anda pasti mahu kembali ke Laman Utama? Pusingan semasa akan ditamatkan.")) {
+                    return;
+                }
+            }
+
+            if (SoundTrack) SoundTrack.stopMusic();
+            clearInterval(previewCountdown);
+            clearInterval(timerCountdown);
+            clearInterval(autoAdvanceCountdown);
+            clearInterval(liveScoreInterval);
+            location.reload();
+        }
 
         // Semak parameter PIN jika imbas QR
         window.addEventListener('DOMContentLoaded', () => {
