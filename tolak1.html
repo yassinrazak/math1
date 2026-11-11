@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik — Operasi Tolak</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
+        body { 
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1f0b40);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff; 
+            min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 90px 16px 80px 16px;
+            overflow-x: hidden; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- NAVIGASI UTAMA TERAPUNG --- */
+        nav {
+            position: fixed; top: 20px; left: 20px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 8px 20px; border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+        nav:hover { background: rgba(255,255,255,0.2); }
+        .logo-group { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .dept-logo { width: 38px; height: 38px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .logo-text { color: #fff; font-size: 0.95rem; font-weight: 900; display: flex; flex-direction: column; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .logo-text span { font-size: 0.65rem; color: #00e096; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Floating Audio Control */
+        .audio-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 999;
+            background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff; font-size: 0.95rem; font-weight: 800; padding: 14px 22px;
+            border-radius: 50px; cursor: pointer; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: 0.2s;
+        }
+        .audio-toggle:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+        /* Screens */
+        .screen { display: none; width: 100%; max-width: 900px; text-align: center; }
+        .active { display: block; animation: slideUp 0.4s ease forwards; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphism Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 45px 35px; border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .logo { font-size: 3.2rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 6px; }
+        .subtitle { font-size: 1.15rem; color: #bca0e6; font-weight: 600; margin-bottom: 25px; letter-spacing: 1px; text-transform: uppercase; }
+
+        .input-group { margin: 18px 0; text-align: left; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 8px; color: #e5d4fc; text-transform: uppercase; }
+        .text-input {
+            width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 700; color: #fff;
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 12px; outline: none;
+            transition: 0.2s;
+        }
+        .text-input:focus { border-color: #00e096; background: rgba(0, 0, 0, 0.45); }
+
+        /* Butang Pelbagai Mod */
+        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-main {
+            flex: 1; color: #fff; border: none;
+            padding: 16px 20px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
+            border-radius: 12px; cursor: pointer; 
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            box-shadow: 0 8px 20px rgba(0, 176, 155, 0.4);
+            transition: 0.2s;
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0, 176, 155, 0.6); }
+        .btn-main:active { transform: translateY(2px); }
+        
+        .btn-host { background: linear-gradient(135deg, #f12711, #f5af19); box-shadow: 0 8px 20px rgba(241, 39, 17, 0.4); }
+
+        .btn-solo {
+            width: 100%; margin-top: 15px;
+            background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
+            box-shadow: 0 8px 25px rgba(233, 64, 87, 0.5);
+            padding: 18px 24px; font-size: 1.2rem; font-weight: 900;
+        }
+        .btn-solo:hover { box-shadow: 0 12px 30px rgba(233, 64, 87, 0.7); transform: translateY(-2px); }
+
+        .divider-label {
+            margin: 22px 0 12px 0; font-size: 0.85rem; font-weight: 800;
+            color: #ffd700; text-transform: uppercase; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .divider-label::before, .divider-label::after {
+            content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Lobby & QR Code Section */
+        .pin-pill {
+            display: inline-block; background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000;
+            font-size: 2.8rem; font-weight: 900; padding: 12px 35px;
+            border-radius: 50px; margin: 15px 0; letter-spacing: 4px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .qr-card-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px; padding: 22px; margin: 20px auto; max-width: 380px;
+        }
+        .qr-image-wrapper {
+            background: #ffffff; padding: 12px; border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .qr-image-wrapper img {
+            display: block; width: 190px; height: 190px; border-radius: 6px;
+        }
+        .qr-scan-label {
+            margin-top: 14px; font-size: 1.05rem; font-weight: 800; color: #ffd700;
+        }
+        .qr-url-link {
+            font-size: 0.85rem; color: #d1b8f7; margin-top: 5px; word-break: break-all;
+        }
+
+        .roster-header { font-size: 1.2rem; margin: 20px 0 15px; font-weight: 700; color: #e5d4fc; }
+        .player-roster {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            max-height: 220px; overflow-y: auto; padding: 15px;
+            background: rgba(0,0,0,0.25); border-radius: 16px; min-height: 90px;
+        }
+        .player-chip {
+            background: #fff; color: #1a0b2e; font-weight: 800; font-size: 0.95rem;
+            padding: 8px 18px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .pulse-loader {
+            display: inline-block; width: 60px; height: 60px;
+            border: 5px solid rgba(255,255,255,0.1); border-top-color: #00e096;
+            border-radius: 50%; animation: spin 1s infinite linear; margin: 20px auto;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* HUD & Question */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            padding: 14px 20px; border-radius: 14px; font-size: 1.05rem; font-weight: 800; margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .answers-counter-badge {
+            background: #00e096; color: #083b27; padding: 4px 14px; border-radius: 20px; font-size: 0.9rem; font-weight: 900;
+        }
+        .phase-badge {
+            background: #ffd700; color: #1a0b2e; padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .points-decay-badge {
+            background: linear-gradient(135deg, #ff007f, #7928ca); color: #fff; padding: 4px 14px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 900;
+            box-shadow: 0 0 12px rgba(255, 0, 127, 0.5);
+            transition: all 0.1s linear;
+        }
+
+        .question-box {
+            background: #ffffff; color: #1a0b2e; position: relative;
+            padding: 45px 25px 30px; border-radius: 20px; min-height: 170px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .timer-badge {
+            position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff00cc, #333399); color: #fff; 
+            width: 62px; height: 62px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; font-weight: 900; border: 4px solid #1f0b40;
+            box-shadow: 0 0 20px rgba(255, 0, 204, 0.6);
+            transition: background 0.3s ease;
+        }
+        .timer-preview {
+            background: linear-gradient(135deg, #f9d423, #ff4e50);
+            box-shadow: 0 0 20px rgba(249, 212, 35, 0.7);
+        }
+        #question-text { font-size: 1.45rem; font-weight: 800; line-height: 1.4; }
+
+        /* Preview Banner */
+        #preview-box {
+            padding: 30px 20px; background: rgba(255, 255, 255, 0.05); border-radius: 16px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+        }
+        .preview-text {
+            font-size: 1.35rem; font-weight: 800; color: #ffd700;
+            animation: pulseText 1s infinite alternate;
+        }
+        @keyframes pulseText { from { opacity: 0.7; transform: scale(0.98); } to { opacity: 1; transform: scale(1.02); } }
+
+        /* 3D Option Grid */
+        .options-grid { 
+            display: none; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .option-item {
+            display: flex; align-items: center; padding: 22px; font-size: 1.15rem;
+            font-weight: 800; color: #fff; border: none; border-radius: 14px;
+            text-align: left; transition: 0.2s;
+        }
+        .option-item .shape { font-size: 2rem; margin-right: 15px; flex-shrink: 0; }
+        
+        .btn-red { background: linear-gradient(135deg, #ff416c, #ff4b2b); box-shadow: 0 6px 0 #b3213a; }
+        .btn-blue { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 6px 0 #0052b3; }
+        .btn-yellow { background: linear-gradient(135deg, #f9d423, #ff4e50); box-shadow: 0 6px 0 #ba3918; }
+        .btn-green { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 6px 0 #0b6b5a; }
+
+        button.option-item { cursor: pointer; }
+        button.option-item:hover { transform: translateY(-3px); }
+        button.option-item:active { transform: translateY(3px); box-shadow: none; }
+        
+        div.option-item { cursor: default; }
+        .disabled-grid { pointer-events: none; opacity: 0.6; }
+
+        #player-submitted-banner {
+            display: none; background: rgba(0, 224, 150, 0.2); border: 2px solid #00e096;
+            color: #00e096; font-size: 1.3rem; font-weight: 800; padding: 14px;
+            border-radius: 12px; margin-top: 20px;
+        }
+
+        /* Feedback Screen */
+        .feedback-banner { padding: 50px 25px; border-radius: 20px; color: #fff; }
+        .correct-bg { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .wrong-bg { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
+        .host-reveal-bg { background: linear-gradient(135deg, #302b63, #46178f); border: 2px solid #00e096; }
+
+        /* Podium (Multiplayer) */
+        .podium-wrap { display: flex; justify-content: center; align-items: flex-end; gap: 15px; margin: 30px 0 20px; height: 210px; }
+        .podium-col {
+            width: 30%; border-radius: 12px 12px 0 0; display: flex;
+            flex-direction: column; justify-content: flex-end; padding: 15px 8px;
+            text-align: center; color: #fff; font-weight: 900; position: relative;
+        }
+        .pod-1 { height: 100%; background: linear-gradient(to top, #f9d423, #ff4e50); }
+        .pod-2 { height: 75%; background: linear-gradient(to top, #bdc3c7, #2c3e50); }
+        .pod-3 { height: 55%; background: linear-gradient(to top, #e65c00, #F9D423); }
+        .medal { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 2.2rem; }
+
+        .winner-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 15px; }
+        .winner-table th { background: rgba(255,255,255,0.1); color: #fff; padding: 12px; font-size: 0.95rem; text-align: left; }
+        .winner-table td { padding: 12px; background: rgba(255,255,255,0.06); text-align: left; font-weight: 700; color: #fff; }
+        .my-row td { background: rgba(0,224,150,0.2) !important; color: #00e096; font-weight: 900; }
+
+        /* Kad Keputusan Solo */
+        .solo-score-box {
+            background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px; padding: 30px 20px; margin: 25px 0;
+        }
+        .solo-stars { font-size: 3rem; margin-bottom: 10px; filter: drop-shadow(0 0 10px #ffd700); }
+        .solo-score-number { font-size: 3.5rem; font-weight: 900; color: #00e096; text-shadow: 0 0 20px rgba(0, 224, 150, 0.5); }
+        .solo-stats-row { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 1.1rem; font-weight: 700; }
+
+        /* --- KAKI HALAMAN (FOOTER) --- */
+        footer {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 20px; z-index: 999;
+        }
+        .footer-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .footer-logos { display: flex; align-items: center; gap: 12px; }
+        .footer-logos img { height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .logo-divider { width: 1px; height: 28px; background: rgba(255, 255, 255, 0.2); }
+        
+        .footer-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: #e5d4fc; }
+        .pulse-dot { width: 10px; height: 10px; background: #00e096; border-radius: 50%; box-shadow: 0 0 12px #00e096; animation: pulseDot 1s infinite alternate; }
+        @keyframes pulseDot { from { opacity: 0.4; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+        
+        .footer-copyright { font-size: 0.85rem; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
+        .footer-copyright span { color: #00e096; font-weight: 800; }
+
+        @media (max-width: 768px) {
+            nav { top: 10px; left: 10px; padding: 6px 16px; }
+            .dept-logo { width: 30px; height: 30px; }
+            .logo-text { font-size: 0.8rem; }
+            .logo-text span { font-size: 0.55rem; }
+            
+            .audio-toggle { top: 10px; right: 10px; padding: 8px 16px; font-size: 0.8rem; }
+
+            .options-grid { grid-template-columns: 1fr; }
+            .logo { font-size: 2.3rem; }
+            #question-text { font-size: 1.2rem; }
+            .btn-row { flex-direction: column; }
+            
+            .footer-container { flex-direction: column; gap: 10px; }
+            .footer-copyright { margin-top: 4px; text-align: center; }
+            body { padding-bottom: 130px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigasi Utama Terapung -->
+    <nav>
+        <a href="#" class="logo-group">
+            <img src="https://lh3.googleusercontent.com/d/1Bgug_Eh1Hpj1I97QobahP3oUQuNGghgI" alt="Logo Jabatan" class="dept-logo">
+            <div class="logo-text">
+                TADIKA ANNUR
+                <span>EXPLORE EXPERIENCE LEARN</span>
+            </div>
+        </a>
+    </nav>
+
+    <button class="audio-toggle" id="audio-btn" onclick="toggleAudio()">🔊 Bunyi ON</button>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="login-screen" class="screen active">
+        <div class="card">
+            <div class="logo">EZ-LEARN MATH!</div>
+            <div class="subtitle">Matematik • 20 Soalan Rawak (Operasi Tolak)</div>
+            
+            <div class="input-group" id="nick-group">
+                <label>Nama Murid</label>
+                <input type="text" id="name-input" class="text-input" placeholder="Masukkan nama anda" maxlength="18">
+            </div>
+
+            <!-- MOD LATIHAN KENDIRI (SELF-PACED / SOLO) -->
+            <button class="btn-main btn-solo" onclick="startSoloMode()">
+                🎯 Mod Latihan Kendiri (Self-Paced / Solo)
+            </button>
+
+            <div class="divider-label">ATAU MAIN BERAMAI-RAMAI (LIVE MULTIPLAYER)</div>
+            
+            <div class="input-group">
+                <label>PIN Bilik / Quiz ID (Untuk Mod Live Sahaja)</label>
+                <input type="text" id="pin-input" class="text-input" placeholder="e.g. TOLAK1" maxlength="12">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-main" onclick="joinAsPlayer()">Masuk Bilik Guru</button>
+                <button class="btn-main btn-host" onclick="startAsHost()">Buka Skrin Guru (Hos)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: LOBBY (LIVE MULTIPLAYER SAHAJA) -->
+    <div id="lobby-screen" class="screen">
+        <div class="card">
+            <div class="subtitle">GAME PIN</div>
+            <div class="pin-pill" id="lobby-pin-display">------</div>
+            <p id="lobby-role-msg">Menunggu semua murid menyertai kuiz...</p>
+
+            <!-- QR CODE SECTION (SHOWN TO HOST) -->
+            <div id="host-qr-section" class="qr-card-container" style="display: none;">
+                <div class="qr-image-wrapper">
+                    <img id="host-qr-image" src="" alt="Imbas Untuk Masuk">
+                </div>
+                <div class="qr-scan-label">📷 Imbas Untuk Masuk Kuiz</div>
+                <div class="qr-url-link" id="qr-url-text">https://edhkn.github.io/tlsm/tolak1.html</div>
+            </div>
+
+            <div id="player-waiting-spinner" style="display: none; padding: 15px 0;">
+                <div class="pulse-loader"></div>
+                <h3 style="color: #00e096; font-size: 1.4rem;">Anda sudah masuk!</h3>
+                <p style="color: #bca0e6; margin-top: 6px;">Sila tunggu guru memulakan kuiz...</p>
+            </div>
+
+            <div class="roster-header">Murid Yang Sudah Masuk: <span id="roster-count" style="color: #00e096;">0</span></div>
+            <div class="player-roster" id="player-roster"></div>
+
+            <button class="btn-main" id="host-start-btn" onclick="hostLaunchesQuiz()" style="display: none; margin-top: 25px; width: 100%;">
+                🚀 Mulakan Kuiz (Pilih 20 Soalan Rawak)
+            </button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: GAMEPLAY -->
+    <div id="game-screen" class="screen">
+        <div class="status-bar">
+            <span id="player-hud-name" style="color: #00e096;">Murid</span>
+            <span id="round-phase-indicator" class="phase-badge">Baca Soalan</span>
+            <span id="live-points-badge" class="points-decay-badge" style="display: none;">⚡ 1,000 pts</span>
+            <span id="answers-counter" class="answers-counter-badge" style="display: none;">Jawapan: 0/0</span>
+            <span id="q-counter" style="background: rgba(255,255,255,0.2); padding: 4px 15px; border-radius: 20px;">Q: 1/20</span>
+            <span id="score-hud">Markah: 0</span>
+        </div>
+        <div class="question-box">
+            <div class="timer-badge timer-preview" id="timer">5</div>
+            <div id="question-text">Memuatkan soalan...</div>
+        </div>
+
+        <!-- 5-Second Question Preview Notice -->
+        <div id="preview-box">
+            <div class="preview-text">📖 Baca soalan dengan teliti... Pilihan jawapan akan muncul sebentar lagi!</div>
+        </div>
+
+        <!-- 20-Second Options Grid -->
+        <div class="options-grid" id="options-container"></div>
+        <div id="player-submitted-banner">Jawapan Dihantar! 🔒 Menunggu kawan-kawan lain...</div>
+    </div>
+
+    <!-- SCREEN 4: ROUND FEEDBACK & REVEAL -->
+    <div id="feedback-screen" class="screen">
+        <div class="card feedback-banner" id="feedback-banner">
+            <h1 id="feedback-title" style="font-size: 3rem; margin-bottom: 12px;">Masa Tamat</h1>
+            <div id="correct-answer-text" style="font-size: 1.25rem; background: rgba(0,0,0,0.35); padding: 14px 20px; border-radius: 12px; display: inline-block; font-weight: 700;"></div>
+            <br>
+            <h2 id="feedback-points" style="font-size: 2.2rem; margin-top: 18px;">+0 pts</h2>
+
+            <!-- KAWALAN SKRIN GURU (HOS SAHAJA) -->
+            <div id="host-feedback-controls" style="display: none; margin-top: 25px;">
+                <p id="auto-advance-msg" style="color: #ffd700; margin-bottom: 10px; font-weight: 800;">Soalan seterusnya dalam 5s...</p>
+                <button class="btn-main" onclick="hostNextQuestion()" style="width: 100%; max-width: 350px;">Soalan Seterusnya ▶</button>
+            </div>
+
+            <!-- KAWALAN MOD KENDIRI (SELF-PACED / SOLO) -->
+            <div id="solo-feedback-controls" style="display: none; margin-top: 30px;">
+                <button class="btn-main" onclick="soloNextQuestion()" style="width: 100%; max-width: 380px; font-size: 1.25rem;">
+                    Soalan Seterusnya ▶
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: FINAL PODIUM & KEPUTUSAN -->
+    <div id="end-screen" class="screen">
+        <div class="card" style="padding: 35px 20px;">
+            <div class="logo" id="final-screen-title" style="font-size: 2.8rem;">PODIUM PEMENANG</div>
+            <div class="subtitle" id="winner-room-tag">Matematik (Operasi Tolak)</div>
+
+            <!-- PAPARAN KEPUTUSAN MOD SOLO / KENDIRI -->
+            <div id="solo-result-card" style="display: none;">
+                <div class="solo-score-box">
+                    <div class="solo-stars" id="solo-stars">⭐⭐⭐</div>
+                    <div class="solo-score-number" id="solo-final-score">0</div>
+                    <div style="font-size: 1rem; color: #ffd700; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Jumlah Markah Terkumpul</div>
+                    
+                    <div class="solo-stats-row">
+                        <div>Ketepatan: <span id="solo-accuracy" style="color: #00e096;">0 / 20</span></div>
+                        <div>Status: <span id="solo-status-text" style="color: #ffd700;">Cemerlang!</span></div>
+                    </div>
+                </div>
+                <button class="btn-main btn-solo" onclick="startSoloMode()">
+                    🔄 Uji Lagi (20 Soalan Baharu)
+                </button>
+            </div>
+
+            <!-- PAPARAN PODIUM MULTIPLAYER (HOS & BILIK GURU) -->
+            <div id="multiplayer-podium-wrap">
+                <div class="podium-wrap">
+                    <div class="podium-col pod-2">
+                        <div class="medal">🥈</div>
+                        <div id="p2-name">-</div>
+                        <div id="p2-score" style="font-size: 0.9rem;">0 pts</div>
+                    </div>
+                    <div class="podium-col pod-1">
+                        <div class="medal">🥇</div>
+                        <div id="p1-name" style="font-size: 1.3rem;">-</div>
+                        <div id="p1-score" style="font-size: 1rem;">0 pts</div>
+                    </div>
+                    <div class="podium-col pod-3">
+                        <div class="medal">🥉</div>
+                        <div id="p3-name">-</div>
+                        <div id="p3-score" style="font-size: 0.9rem;">0 pts</div>
+                    </div>
+                </div>
+
+                <table class="winner-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Kedudukan</th>
+                            <th>Nama Murid</th>
+                            <th style="width: 25%;">Markah</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody"></tbody>
+                </table>
+            </div>
+
+            <button class="btn-main" onclick="location.reload()" style="margin-top: 25px; width: 100%;">
+                🏠 Kembali ke Menu Utama
+            </button>
+        </div>
+    </div>
+
+    <!-- Kaki Halaman (Footer Moden) -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logos">
+                <img src="https://lh3.googleusercontent.com/d/1Bgug_Eh1Hpj1I97QobahP3oUQuNGghgI" alt="HKN Logo">
+                <div class="logo-divider"></div>
+                <img src="https://lh3.googleusercontent.com/d/1LdMRx-PF49CWOcrjthClGLJg-yQoJ2mt" alt="MOH Logo">
+            </div>
+
+            <div class="footer-status">
+                <span class="pulse-dot"></span>
+                <span>TADIKA ANNUR PORTAL Ver 1.0</span>
+            </div>
+
+            <p class="footer-copyright">© 2026 <span>Yassin Razak</span> | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-fill PIN if scanned via QR code query parameter
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pinParam = urlParams.get('pin');
+            if (pinParam) {
+                const pinInput = document.getElementById('pin-input');
+                if (pinInput) pinInput.value = pinParam.trim().toUpperCase();
+            }
+        });
+
+        // =================================================================
+        // 1. KAHOOT SOUND ENGINE (Web Audio API)
+        // =================================================================
+        const SoundTrack = {
+            ctx: null, muted: false, timer: null, step: 0, mode: 'none',
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+            },
+            playTone(freq, type, dur, vol, slideTo = null) {
+                if (this.muted || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + dur);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + dur);
+                } catch(e) {}
+            },
+            playNoise(dur, vol) {
+                if (this.muted || !this.ctx) return;
+                try {
+                    const bSize = this.ctx.sampleRate * dur;
+                    const b = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
+                    const d = b.getChannelData(0);
+                    for (let i = 0; i < bSize; i++) d[i] = Math.random() * 2 - 1;
+                    const noise = this.ctx.createBufferSource(); noise.buffer = b;
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+                    noise.connect(gain); gain.connect(this.ctx.destination);
+                    noise.start();
+                } catch(e) {}
+            },
+            startLobbyMusic() {
+                this.init(); this.stopMusic(); this.mode = 'lobby'; this.step = 0;
+                const bass = [130.81, 0, 130.81, 155.56, 0, 174.61, 196.00, 155.56];
+                const arps = [523.25, 622.25, 783.99, 932.33, 1046.50, 783.99, 622.25, 523.25];
+                this.timer = setInterval(() => {
+                    const b = bass[this.step % bass.length];
+                    if (b > 0) this.playTone(b, 'sawtooth', 0.22, 0.2);
+                    if (this.step % 2 === 1) this.playTone(arps[(this.step * 3) % arps.length], 'triangle', 0.15, 0.1);
+                    if (this.step % 4 === 0) this.playTone(80, 'sine', 0.18, 0.35, 30);
+                    else if (this.step % 4 === 2) this.playNoise(0.1, 0.15);
+                    else this.playNoise(0.04, 0.04);
+                    this.step++;
+                }, 230);
+            },
+            startPreviewTone() {
+                this.init(); this.stopMusic(); this.mode = 'preview'; this.step = 0;
+                this.timer = setInterval(() => {
+                    this.playTone(440, 'triangle', 0.08, 0.12);
+                    this.step++;
+                }, 1000);
+            },
+            startGameMusic() {
+                this.init(); this.stopMusic(); this.mode = 'game'; this.step = 0;
+                this.timer = setInterval(() => {
+                    this.playTone((this.step % 16 < 8) ? 146.83 : 130.81, 'triangle', 0.12, 0.15);
+                    this.playTone((this.step % 2 === 0) ? 1800 : 1200, 'sine', 0.04, 0.07);
+                    this.step++;
+                }, 250);
+            },
+            playPopSfx() {
+                this.init();
+                this.playTone(523.25, 'sine', 0.1, 0.3);
+                setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.3), 60);
+                setTimeout(() => this.playTone(783.99, 'triangle', 0.18, 0.35), 120);
+            },
+            startPodiumFanfare() {
+                this.init(); this.stopMusic(); this.mode = 'podium';
+                [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach((f, i) => {
+                    setTimeout(() => this.playTone(f, 'square', 0.4, 0.2), i * 180);
+                });
+            },
+            playSfx(type) {
+                this.init();
+                if (type === 'correct') {
+                    this.playTone(587.33, 'triangle', 0.15, 0.3);
+                    setTimeout(() => this.playTone(880, 'triangle', 0.35, 0.3), 120);
+                } else if (type === 'wrong') {
+                    this.playTone(220, 'sawtooth', 0.25, 0.3, 110);
+                }
+            },
+            stopMusic() { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
+        };
+
+        function toggleAudio() {
+            SoundTrack.init(); SoundTrack.muted = !SoundTrack.muted;
+            document.getElementById('audio-btn').innerText = SoundTrack.muted ? "🔇 Bunyi OFF" : "🔊 Bunyi ON";
+            if (SoundTrack.muted) SoundTrack.stopMusic();
+            else { 
+                if (SoundTrack.mode === 'lobby') SoundTrack.startLobbyMusic(); 
+                if (SoundTrack.mode === 'preview') SoundTrack.startPreviewTone();
+                if (SoundTrack.mode === 'game') SoundTrack.startGameMusic(); 
+            }
+        }
+
+        // =================================================================
+        // 2. FIREBASE BACKEND SETUP
+        // =================================================================
+        const firebaseConfig = { databaseURL: "https://tlsm-1-default-rtdb.asia-southeast1.firebasedatabase.app/" };
+        let db = null;
+        try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } 
+        catch (e) { console.warn("Ralat sambungan Firebase:", e); }
+
+        // =================================================================
+        // 3. BANK 100 SOALAN OPERASI TOLAK (SET 1 HINGGA SET 4)
+        // =================================================================
+        const allQuestionsPool = [
+            // --- SET 1: Soalan 1–25 ---
+            { q: "2 − 1 = ?", options: ["0", "1", "2", "3"], correct: 2 },
+            { q: "3 − 1 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "3 − 2 = ?", options: ["2", "1", "3", "0"], correct: 2 },
+            { q: "4 − 1 = ?", options: ["3", "2", "4", "1"], correct: 1 },
+            { q: "4 − 2 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "4 − 3 = ?", options: ["2", "1", "3", "0"], correct: 2 },
+            { q: "5 − 1 = ?", options: ["3", "5", "4", "2"], correct: 3 },
+            { q: "5 − 2 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "5 − 3 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "5 − 4 = ?", options: ["2", "0", "1", "3"], correct: 3 },
+            { q: "6 − 1 = ?", options: ["4", "6", "5", "3"], correct: 3 },
+            { q: "6 − 2 = ?", options: ["3", "5", "4", "2"], correct: 3 },
+            { q: "6 − 3 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "6 − 4 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "6 − 5 = ?", options: ["0", "2", "1", "3"], correct: 3 },
+            { q: "7 − 1 = ?", options: ["5", "7", "6", "4"], correct: 3 },
+            { q: "7 − 2 = ?", options: ["4", "6", "5", "3"], correct: 3 },
+            { q: "7 − 3 = ?", options: ["3", "5", "4", "6"], correct: 3 },
+            { q: "7 − 4 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "7 − 5 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "7 − 6 = ?", options: ["0", "2", "1", "3"], correct: 3 },
+            { q: "8 − 1 = ?", options: ["6", "8", "7", "5"], correct: 3 },
+            { q: "8 − 2 = ?", options: ["5", "7", "6", "4"], correct: 3 },
+            { q: "8 − 3 = ?", options: ["4", "6", "5", "7"], correct: 3 },
+            { q: "8 − 4 = ?", options: ["3", "5", "4", "6"], correct: 3 },
+
+            // --- SET 2: Soalan 26–50 ---
+            { q: "8 − 5 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "8 − 6 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "8 − 7 = ?", options: ["0", "2", "1", "3"], correct: 3 },
+            { q: "9 − 1 = ?", options: ["7", "9", "8", "6"], correct: 3 },
+            { q: "9 − 2 = ?", options: ["6", "8", "7", "5"], correct: 3 },
+            { q: "9 − 3 = ?", options: ["5", "7", "6", "4"], correct: 3 },
+            { q: "9 − 4 = ?", options: ["4", "6", "5", "7"], correct: 3 },
+            { q: "9 − 5 = ?", options: ["3", "5", "4", "6"], correct: 3 },
+            { q: "9 − 6 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "9 − 7 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "9 − 8 = ?", options: ["0", "2", "1", "3"], correct: 3 },
+            { q: "5 − 1 = ?", options: ["4", "3", "2", "5"], correct: 1 },
+            { q: "6 − 2 = ?", options: ["4", "3", "5", "2"], correct: 1 },
+            { q: "7 − 3 = ?", options: ["4", "5", "3", "6"], correct: 1 },
+            { q: "8 − 4 = ?", options: ["4", "3", "5", "6"], correct: 1 },
+            { q: "9 − 5 = ?", options: ["4", "3", "5", "6"], correct: 1 },
+            { q: "6 − 1 = ?", options: ["5", "4", "6", "3"], correct: 1 },
+            { q: "7 − 2 = ?", options: ["5", "4", "6", "3"], correct: 1 },
+            { q: "8 − 3 = ?", options: ["5", "4", "6", "7"], correct: 1 },
+            { q: "9 − 4 = ?", options: ["5", "4", "6", "7"], correct: 1 },
+            { q: "7 − 1 = ?", options: ["6", "5", "7", "4"], correct: 1 },
+            { q: "8 − 2 = ?", options: ["6", "5", "7", "4"], correct: 1 },
+            { q: "9 − 3 = ?", options: ["6", "5", "7", "4"], correct: 1 },
+            { q: "8 − 1 = ?", options: ["7", "6", "8", "5"], correct: 1 },
+            { q: "9 − 2 = ?", options: ["7", "6", "8", "5"], correct: 1 },
+
+            // --- SET 3: Soalan 51–75 ---
+            { q: "2 − 1 = ?", options: ["1", "0", "2", "3"], correct: 1 },
+            { q: "4 − 1 = ?", options: ["2", "3", "4", "1"], correct: 2 },
+            { q: "5 − 2 = ?", options: ["4", "3", "2", "5"], correct: 2 },
+            { q: "6 − 3 = ?", options: ["4", "2", "3", "5"], correct: 3 },
+            { q: "7 − 4 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "8 − 5 = ?", options: ["3", "2", "4", "5"], correct: 1 },
+            { q: "9 − 6 = ?", options: ["4", "3", "2", "5"], correct: 2 },
+            { q: "3 − 1 = ?", options: ["2", "1", "3", "0"], correct: 1 },
+            { q: "4 − 2 = ?", options: ["3", "2", "1", "4"], correct: 2 },
+            { q: "5 − 3 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "6 − 4 = ?", options: ["2", "1", "3", "4"], correct: 1 },
+            { q: "7 − 5 = ?", options: ["3", "1", "2", "4"], correct: 3 },
+            { q: "8 − 6 = ?", options: ["2", "3", "1", "4"], correct: 1 },
+            { q: "9 − 7 = ?", options: ["3", "2", "1", "4"], correct: 2 },
+            { q: "4 − 3 = ?", options: ["2", "0", "1", "3"], correct: 3 },
+            { q: "5 − 4 = ?", options: ["1", "2", "0", "3"], correct: 1 },
+            { q: "6 − 5 = ?", options: ["2", "0", "1", "3"], correct: 3 },
+            { q: "7 − 6 = ?", options: ["1", "2", "0", "3"], correct: 1 },
+            { q: "8 − 7 = ?", options: ["2", "1", "0", "3"], correct: 2 },
+            { q: "9 − 8 = ?", options: ["1", "2", "0", "3"], correct: 1 },
+            { q: "3 − 2 = ?", options: ["1", "2", "0", "3"], correct: 1 },
+            { q: "5 − 1 = ?", options: ["4", "5", "3", "2"], correct: 1 },
+            { q: "6 − 2 = ?", options: ["4", "3", "5", "2"], correct: 1 },
+            { q: "7 − 3 = ?", options: ["5", "4", "3", "6"], correct: 2 },
+            { q: "8 − 4 = ?", options: ["4", "5", "3", "6"], correct: 1 },
+
+            // --- SET 4: Soalan 76–100 ---
+            { q: "9 − 5 = ?", options: ["5", "3", "4", "6"], correct: 3 },
+            { q: "6 − 1 = ?", options: ["5", "4", "6", "3"], correct: 1 },
+            { q: "7 − 2 = ?", options: ["6", "5", "4", "3"], correct: 2 },
+            { q: "8 − 3 = ?", options: ["4", "6", "5", "7"], correct: 3 },
+            { q: "9 − 4 = ?", options: ["5", "4", "6", "7"], correct: 1 },
+            { q: "5 − 2 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "6 − 3 = ?", options: ["3", "2", "4", "5"], correct: 1 },
+            { q: "7 − 4 = ?", options: ["4", "3", "2", "5"], correct: 2 },
+            { q: "8 − 5 = ?", options: ["3", "4", "2", "5"], correct: 1 },
+            { q: "9 − 6 = ?", options: ["2", "4", "3", "5"], correct: 3 },
+            { q: "4 − 1 = ?", options: ["3", "2", "4", "1"], correct: 1 },
+            { q: "5 − 1 = ?", options: ["4", "3", "5", "2"], correct: 1 },
+            { q: "6 − 1 = ?", options: ["4", "5", "3", "6"], correct: 2 },
+            { q: "7 − 1 = ?", options: ["6", "5", "7", "4"], correct: 1 },
+            { q: "8 − 1 = ?", options: ["7", "6", "8", "5"], correct: 1 },
+            { q: "9 − 1 = ?", options: ["8", "7", "9", "6"], correct: 1 },
+            { q: "5 − 3 = ?", options: ["3", "2", "1", "4"], correct: 2 },
+            { q: "6 − 4 = ?", options: ["2", "3", "1", "4"], correct: 1 },
+            { q: "7 − 5 = ?", options: ["3", "2", "1", "4"], correct: 2 },
+            { q: "8 − 6 = ?", options: ["2", "3", "1", "4"], correct: 1 },
+            { q: "9 − 7 = ?", options: ["2", "3", "1", "4"], correct: 1 },
+            { q: "4 − 2 = ?", options: ["1", "3", "2", "4"], correct: 3 },
+            { q: "5 − 4 = ?", options: ["2", "1", "0", "3"], correct: 2 },
+            { q: "7 − 3 = ?", options: ["4", "5", "3", "6"], correct: 1 },
+            { q: "9 − 8 = ?", options: ["1", "2", "0", "3"], correct: 1 }
+        ];
+
+        // =================================================================
+        // 4. SISTEM MULTIPLAYER & PEMILIHAN 20 SOALAN RAWAK
+        // =================================================================
+        let isHost = false;
+        let isSoloMode = false;
+        let roomPin = "";
+        let myId = "usr_" + Math.random().toString(36).substring(2, 9);
+        let myName = "";
+        let currentQIndex = -1;
+        let myScore = 0;
+        let soloCorrectCount = 0;
+        let myChoiceThisRound = null;
+        let roundEarnedPoints = 0; 
+        let previewCountdown = null;
+        let timerCountdown = null;
+        let autoAdvanceCountdown = null;
+        let liveScoreInterval = null;
+        let answerPhaseStartTime = 0; 
+        let secondsLeft = 20;
+        let totalPlayerCount = 0;
+        let isAnsweringPhase = false;
+
+        let quizData = [];
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // Memilih 20 indeks unik secara rawak daripada bank 100 soalan
+        function pick20RandomIndices() {
+            const indices = Array.from({ length: allQuestionsPool.length }, (_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            return indices.slice(0, 20);
+        }
+
+        // =================================================================
+        // MOD 1: UJIAN KENDIRI (SELF-PACED / SOLO TEST)
+        // =================================================================
+        function startSoloMode() {
+            isSoloMode = true;
+            isHost = false;
+            myName = document.getElementById('name-input').value.trim() || "Murid Cerdik";
+            
+            const selected20 = pick20RandomIndices();
+            quizData = selected20.map(idx => allQuestionsPool[idx]);
+
+            myScore = 0;
+            soloCorrectCount = 0;
+            currentQIndex = 0;
+
+            document.getElementById('player-hud-name').innerText = `${myName} (Kendiri)`;
+            document.getElementById('score-hud').style.display = "inline-block";
+            document.getElementById('score-hud').innerText = `Markah: 0`;
+            document.getElementById('answers-counter').style.display = "none";
+
+            SoundTrack.startGameMusic();
+            renderQuestion(0);
+        }
+
+        // =================================================================
+        // MOD 2: MULTIPLAYER (BILIK GURU & HOS)
+        // =================================================================
+        function joinAsPlayer() {
+            const pin = document.getElementById('pin-input').value.trim().toUpperCase();
+            const name = document.getElementById('name-input').value.trim();
+            if (!pin || !name) { alert("Sila masukkan PIN Bilik dan Nama Murid!"); return; }
+
+            isSoloMode = false;
+            isHost = false;
+            roomPin = pin;
+            myName = name;
+            document.getElementById('player-hud-name').innerText = myName;
+
+            SoundTrack.startLobbyMusic();
+            showScreen('lobby-screen');
+            document.getElementById('lobby-pin-display').innerText = roomPin;
+            document.getElementById('player-waiting-spinner').style.display = "block";
+            document.getElementById('host-qr-section').style.display = "none";
+            document.getElementById('lobby-role-msg').innerText = "Menunggu guru memulakan kuiz...";
+
+            if (db) {
+                db.ref(`rooms/${roomPin}/players/${myId}`).set({ name: myName, score: 0 });
+                listenToRoomState();
+            }
+        }
+
+        function startAsHost() {
+            const pin = document.getElementById('pin-input').value.trim().toUpperCase() || "TOLAK" + Math.floor(100 + Math.random() * 900);
+            isSoloMode = false;
+            isHost = true;
+            roomPin = pin;
+            myName = "GURU (HOS)";
+            document.getElementById('player-hud-name').innerText = "SKRIN GURU";
+            document.getElementById('score-hud').style.display = "none";
+            document.getElementById('answers-counter').style.display = "inline-block";
+
+            const pageUrl = window.location.origin.includes('github.io') 
+                ? window.location.href.split('?')[0] 
+                : window.location.href;
+            const targetUrl = `${pageUrl}?pin=${encodeURIComponent(roomPin)}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(targetUrl)}`;
+            
+            document.getElementById('host-qr-image').src = qrApiUrl;
+            document.getElementById('qr-url-text').innerText = pageUrl;
+            document.getElementById('host-qr-section').style.display = "flex";
+
+            SoundTrack.startLobbyMusic();
+            showScreen('lobby-screen');
+            document.getElementById('lobby-pin-display').innerText = roomPin;
+            document.getElementById('host-start-btn').style.display = "inline-block";
+            document.getElementById('player-waiting-spinner').style.display = "none";
+            document.getElementById('lobby-role-msg').innerText = "Imbas kod QR atau masukkan PIN di bawah untuk menyertai:";
+
+            const selected20 = pick20RandomIndices();
+            quizData = selected20.map(idx => allQuestionsPool[idx]);
+
+            if (db) {
+                db.ref(`rooms/${roomPin}`).set({
+                    status: 'lobby',
+                    qIndex: -1,
+                    hostId: myId,
+                    selectedIndices: selected20
+                });
+                listenToRoomState();
+            }
+        }
+
+        function listenToRoomState() {
+            if (!db || isSoloMode) return;
+
+            db.ref(`rooms/${roomPin}/players`).on('value', snap => {
+                const players = snap.val() || {};
+                const entries = Object.entries(players);
+                totalPlayerCount = entries.length;
+                document.getElementById('roster-count').innerText = totalPlayerCount;
+
+                const rosterDiv = document.getElementById('player-roster');
+                rosterDiv.innerHTML = '';
+                entries.forEach(([id, p]) => {
+                    const chip = document.createElement('div');
+                    chip.className = 'player-chip';
+                    chip.innerText = p.name;
+                    rosterDiv.appendChild(chip);
+                });
+            });
+
+            db.ref(`rooms/${roomPin}/answers`).on('value', snap => {
+                const answers = snap.val() || {};
+                const answeredCount = Object.keys(answers).length;
+
+                if (isHost) {
+                    document.getElementById('answers-counter').innerText = `Jawapan: ${answeredCount}/${totalPlayerCount}`;
+                    
+                    if (isAnsweringPhase && totalPlayerCount > 0 && answeredCount >= totalPlayerCount) {
+                        db.ref(`rooms/${roomPin}/status`).once('value', s => {
+                            if (s.val() === 'playing') {
+                                clearInterval(timerCountdown);
+                                clearInterval(liveScoreInterval);
+                                db.ref(`rooms/${roomPin}`).update({ status: 'reveal' });
+                            }
+                        });
+                    }
+                }
+            });
+
+            db.ref(`rooms/${roomPin}`).on('value', snap => {
+                const room = snap.val();
+                if (!room) return;
+
+                if (room.selectedIndices && Array.isArray(room.selectedIndices)) {
+                    quizData = room.selectedIndices.map(idx => allQuestionsPool[idx]);
+                }
+
+                if (room.status === 'playing') {
+                    if (currentQIndex !== room.qIndex) {
+                        currentQIndex = room.qIndex;
+                        renderQuestion(currentQIndex);
+                    }
+                } else if (room.status === 'reveal') {
+                    renderFeedbackScreen();
+                } else if (room.status === 'ended') {
+                    SoundTrack.startPodiumFanfare();
+                    showPodium();
+                }
+            });
+        }
+
+        function hostLaunchesQuiz() {
+            if (!db) return;
+            db.ref(`rooms/${roomPin}`).update({
+                status: 'playing',
+                qIndex: 0,
+                answers: null
+            });
+        }
+
+        // =================================================================
+        // 5. PAPARAN SOALAN & INTERAKSI JAWAPAN
+        // =================================================================
+        function renderQuestion(idx) {
+            clearInterval(previewCountdown);
+            clearInterval(timerCountdown);
+            clearInterval(liveScoreInterval);
+
+            isAnsweringPhase = false;
+            myChoiceThisRound = null;
+            roundEarnedPoints = 0;
+            showScreen('game-screen');
+
+            const q = quizData[idx];
+            document.getElementById('q-counter').innerText = `Q: ${idx + 1}/20`;
+            if (!isHost) document.getElementById('score-hud').innerText = `Markah: ${myScore}`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('player-submitted-banner').style.display = "none";
+
+            const timerEl = document.getElementById('timer');
+            const phaseBadge = document.getElementById('round-phase-indicator');
+            const livePtsBadge = document.getElementById('live-points-badge');
+            const previewBox = document.getElementById('preview-box');
+            const container = document.getElementById('options-container');
+
+            container.innerHTML = '';
+            container.classList.remove('disabled-grid');
+
+            const shapes = ['▲', '◆', '●', '■'];
+            const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
+
+            q.options.forEach((optText, optIdx) => {
+                const choiceNum = optIdx + 1;
+                if (isHost) {
+                    const card = document.createElement('div');
+                    card.className = `option-item ${colors[optIdx]}`;
+                    card.innerHTML = `<span class="shape">${shapes[optIdx]}</span><span>${optText}</span>`;
+                    container.appendChild(card);
+                } else {
+                    const btn = document.createElement('button');
+                    btn.className = `option-item ${colors[optIdx]}`;
+                    btn.innerHTML = `<span class="shape">${shapes[optIdx]}</span><span>${optText}</span>`;
+                    btn.onclick = () => playerPicksAnswer(choiceNum);
+                    container.appendChild(btn);
+                }
+            });
+
+            if (isSoloMode) {
+                previewBox.style.display = "none";
+                container.style.display = "grid";
+                timerEl.classList.remove('timer-preview');
+                phaseBadge.innerText = "Ujian Kendiri";
+                phaseBadge.style.background = "#8a2387";
+                phaseBadge.style.color = "#fff";
+                startAnswerPhase();
+                return;
+            }
+
+            timerEl.classList.add('timer-preview');
+            phaseBadge.innerText = "Baca Soalan";
+            phaseBadge.style.background = "#ffd700";
+            phaseBadge.style.color = "#1a0b2e";
+            livePtsBadge.style.display = "none";
+            previewBox.style.display = "block";
+            container.style.display = "none";
+
+            if (isHost) {
+                document.getElementById('answers-counter').innerText = `Jawapan: 0/${totalPlayerCount}`;
+            }
+
+            let previewSeconds = 5;
+            timerEl.innerText = previewSeconds;
+            SoundTrack.startPreviewTone();
+
+            previewCountdown = setInterval(() => {
+                previewSeconds--;
+                if (previewSeconds > 0) {
+                    timerEl.innerText = previewSeconds;
+                } else {
+                    clearInterval(previewCountdown);
+                    startAnswerPhase();
+                }
+            }, 1000);
+        }
+
+        function startAnswerPhase() {
+            isAnsweringPhase = true;
+            answerPhaseStartTime = Date.now(); 
+
+            const timerEl = document.getElementById('timer');
+            const phaseBadge = document.getElementById('round-phase-indicator');
+            const livePtsBadge = document.getElementById('live-points-badge');
+            const previewBox = document.getElementById('preview-box');
+            const container = document.getElementById('options-container');
+
+            previewBox.style.display = "none";
+            container.style.display = "grid";
+            timerEl.classList.remove('timer-preview');
+
+            if (!isSoloMode) {
+                phaseBadge.innerText = "Jawab Sekarang!";
+                phaseBadge.style.background = "#00e096";
+                phaseBadge.style.color = "#083b27";
+            }
+
+            livePtsBadge.style.display = "inline-block";
+            livePtsBadge.innerText = "⚡ 1,000 pts";
+
+            clearInterval(liveScoreInterval);
+            liveScoreInterval = setInterval(() => {
+                if (!isAnsweringPhase || myChoiceThisRound !== null) return;
+                const elapsedMs = Math.max(0, Date.now() - answerPhaseStartTime);
+                const currentPotential = Math.max(500, Math.round(1000 - (500 * (elapsedMs / 20000))));
+                livePtsBadge.innerText = `⚡ ${currentPotential.toLocaleString()} pts`;
+            }, 50);
+
+            SoundTrack.playPopSfx();
+            setTimeout(() => {
+                if (isAnsweringPhase) SoundTrack.startGameMusic();
+            }, 300);
+
+            secondsLeft = 20;
+            timerEl.innerText = secondsLeft;
+            clearInterval(timerCountdown);
+
+            timerCountdown = setInterval(() => {
+                secondsLeft--;
+                timerEl.innerText = secondsLeft;
+
+                if (secondsLeft <= 0) {
+                    clearInterval(timerCountdown);
+                    clearInterval(liveScoreInterval);
+                    if (isSoloMode) {
+                        playerPicksAnswer(0);
+                    } else if (isHost && db) {
+                        db.ref(`rooms/${roomPin}`).update({ status: 'reveal' });
+                    }
+                }
+            }, 1000);
+        }
+
+        function playerPicksAnswer(choice) {
+            if (isHost || !isAnsweringPhase || myChoiceThisRound !== null) return;
+            myChoiceThisRound = choice;
+            clearInterval(liveScoreInterval);
+            clearInterval(timerCountdown);
+
+            const responseTimeMs = Math.max(0, Date.now() - answerPhaseStartTime);
+            
+            document.getElementById('options-container').classList.add('disabled-grid');
+
+            const q = quizData[currentQIndex];
+            if (choice === q.correct) {
+                const decayRatio = Math.min(1, responseTimeMs / 20000);
+                roundEarnedPoints = Math.max(500, Math.round(1000 - (500 * decayRatio)));
+                myScore += roundEarnedPoints;
+                soloCorrectCount++;
+                document.getElementById('live-points-badge').innerText = `⚡ +${roundEarnedPoints} pts (Terkunci)`;
+            } else {
+                roundEarnedPoints = 0;
+                document.getElementById('live-points-badge').innerText = `⚡ 0 pts`;
+            }
+
+            if (isSoloMode) {
+                renderFeedbackScreen();
+                return;
+            }
+
+            document.getElementById('player-submitted-banner').style.display = "block";
+            if (db) {
+                db.ref(`rooms/${roomPin}/players/${myId}`).update({ score: myScore });
+                db.ref(`rooms/${roomPin}/answers/${myId}`).set({
+                    choice: choice,
+                    timeMs: responseTimeMs,
+                    timestamp: Date.now()
+                });
+            }
+        }
+
+        // =================================================================
+        // 6. MAKLUM BALAS & SEMAKAN JAWAPAN
+        // =================================================================
+        function renderFeedbackScreen() {
+            clearInterval(previewCountdown);
+            clearInterval(timerCountdown);
+            clearInterval(liveScoreInterval);
+            isAnsweringPhase = false;
+
+            SoundTrack.stopMusic();
+            showScreen('feedback-screen');
+
+            const q = quizData[currentQIndex];
+            const banner = document.getElementById('feedback-banner');
+            const title = document.getElementById('feedback-title');
+            const ansText = document.getElementById('correct-answer-text');
+            const ptsText = document.getElementById('feedback-points');
+            const hostControls = document.getElementById('host-feedback-controls');
+            const soloControls = document.getElementById('solo-feedback-controls');
+
+            ansText.innerText = `Jawapan Betul: ${q.options[q.correct - 1]}`;
+
+            if (isSoloMode) {
+                hostControls.style.display = "none";
+                soloControls.style.display = "block";
+                ptsText.style.display = "inline-block";
+
+                if (myChoiceThisRound === q.correct) {
+                    banner.className = 'card feedback-banner correct-bg';
+                    title.innerText = "Tahniah, Betul!";
+                    ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
+                    SoundTrack.playSfx('correct');
+                } else if (myChoiceThisRound === 0) {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Masa Tamat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                } else {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Kurang Tepat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                }
+                return;
+            }
+
+            soloControls.style.display = "none";
+            if (isHost) {
+                banner.className = 'card feedback-banner host-reveal-bg';
+                title.innerText = "Pusingan Selesai!";
+                ptsText.style.display = "none";
+                hostControls.style.display = "block";
+
+                let autoSeconds = 5;
+                const autoMsg = document.getElementById('auto-advance-msg');
+                autoMsg.innerText = `Soalan seterusnya dalam ${autoSeconds}s...`;
+                clearInterval(autoAdvanceCountdown);
+
+                autoAdvanceCountdown = setInterval(() => {
+                    autoSeconds--;
+                    if (autoSeconds > 0) {
+                        autoMsg.innerText = `Soalan seterusnya dalam ${autoSeconds}s...`;
+                    } else {
+                        clearInterval(autoAdvanceCountdown);
+                        hostNextQuestion();
+                    }
+                }, 1000);
+            } else {
+                ptsText.style.display = "inline-block";
+                hostControls.style.display = "none";
+
+                if (myChoiceThisRound === q.correct) {
+                    banner.className = 'card feedback-banner correct-bg';
+                    title.innerText = "Tahniah, Betul!";
+                    ptsText.innerText = `+${roundEarnedPoints.toLocaleString()} pts`;
+                    SoundTrack.playSfx('correct');
+                } else if (myChoiceThisRound === null || myChoiceThisRound === 0) {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Masa Tamat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                } else {
+                    banner.className = 'card feedback-banner wrong-bg';
+                    title.innerText = "Kurang Tepat!";
+                    ptsText.innerText = "+0 pts";
+                    SoundTrack.playSfx('wrong');
+                }
+            }
+        }
+
+        function soloNextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < quizData.length) {
+                renderQuestion(currentQIndex);
+            } else {
+                showSoloEndScreen();
+            }
+        }
+
+        function hostNextQuestion() {
+            clearInterval(autoAdvanceCountdown);
+            if (!db) return;
+
+            if (currentQIndex + 1 < quizData.length) {
+                db.ref(`rooms/${roomPin}`).update({
+                    status: 'playing',
+                    qIndex: currentQIndex + 1,
+                    answers: null
+                });
+            } else {
+                db.ref(`rooms/${roomPin}`).update({ status: 'ended' });
+            }
+        }
+
+        // =================================================================
+        // 7. KEPUTUSAN AKHIR & PODIUM
+        // =================================================================
+        function showSoloEndScreen() {
+            SoundTrack.startPodiumFanfare();
+            showScreen('end-screen');
+
+            document.getElementById('final-screen-title').innerText = "TAHNIAH, SELESAI!";
+            document.getElementById('winner-room-tag').innerText = `Latihan Kendiri: ${myName}`;
+            document.getElementById('multiplayer-podium-wrap').style.display = "none";
+            document.getElementById('solo-result-card').style.display = "block";
+
+            document.getElementById('solo-final-score').innerText = myScore.toLocaleString();
+            document.getElementById('solo-accuracy').innerText = `${soloCorrectCount} / ${quizData.length}`;
+
+            const starsEl = document.getElementById('solo-stars');
+            const statusEl = document.getElementById('solo-status-text');
+            if (soloCorrectCount >= 18) {
+                starsEl.innerText = "⭐⭐⭐";
+                statusEl.innerText = "Luar Biasa / Cemerlang! 🌟";
+            } else if (soloCorrectCount >= 12) {
+                starsEl.innerText = "⭐⭐";
+                statusEl.innerText = "Bagus, Teruskan Usaha! 👍";
+            } else {
+                starsEl.innerText = "⭐";
+                statusEl.innerText = "Cuba Lagi Untuk Capai 3 Bintang! 💪";
+            }
+        }
+
+        function showPodium() {
+            showScreen('end-screen');
+            document.getElementById('final-screen-title').innerText = "PODIUM PEMENANG";
+            document.getElementById('winner-room-tag').innerText = `PIN Bilik: ${roomPin}`;
+            document.getElementById('multiplayer-podium-wrap').style.display = "block";
+            document.getElementById('solo-result-card').style.display = "none";
+
+            if (!db) return;
+
+            db.ref(`rooms/${roomPin}/players`).once('value', snap => {
+                const sorted = Object.entries(snap.val() || {})
+                    .map(([id, p]) => ({ id, ...p }))
+                    .sort((a, b) => (b.score || 0) - (a.score || 0));
+
+                document.getElementById('p1-name').innerText = sorted[0] ? sorted[0].name : '-';
+                document.getElementById('p1-score').innerText = sorted[0] ? `${sorted[0].score.toLocaleString()} pts` : '0 pts';
+                document.getElementById('p2-name').innerText = sorted[1] ? sorted[1].name : '-';
+                document.getElementById('p2-score').innerText = sorted[1] ? `${sorted[1].score.toLocaleString()} pts` : '0 pts';
+                document.getElementById('p3-name').innerText = sorted[2] ? sorted[2].name : '-';
+                document.getElementById('p3-score').innerText = sorted[2] ? `${sorted[2].score.toLocaleString()} pts` : '0 pts';
+
+                const tbody = document.getElementById('leaderboard-tbody');
+                tbody.innerHTML = '';
+                sorted.forEach((p, idx) => {
+                    const tr = document.createElement('tr');
+                    if (p.id === myId) tr.classList.add('my-row');
+                    tr.innerHTML = `
+                        <td><strong>#${idx + 1}</strong></td>
+                        <td>${escapeHtml(p.name)} ${p.id === myId ? '(Anda)' : ''}</td>
+                        <td>${(p.score || 0).toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+        }
+    </script>
+</body>
+</html>
